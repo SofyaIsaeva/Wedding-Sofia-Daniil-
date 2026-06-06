@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Даниил & София — Свадьба 08.08.2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/upper-east-side" rel="stylesheet">
+<style>
+  :root {
+    --ivory: #F5F0E8;
+    --ivory-light: #FAF7F2;
+    --cream: #FDFBF7;
+    --gold: #B8996A;
+    --gold-light: #D4B896;
+    --gold-dark: #8B7355;
+    --text-dark: #4A3F35;
+    --text-soft: #6B5D4F;
+    --lace: #E8DFD0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--text-dark);
+    background: var(--ivory);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ===== ENVELOPE SCREEN ===== */
+  #envelope-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #EDE8DF;
+    transition: opacity 1s ease, visibility 1s ease;
+  }
+
+  #envelope-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .envelope-container {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s ease;
+    max-width: 92vw;
+    max-height: 92vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .envelope-container.open {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+
+  .envelope-image {
+    max-width: 100%;
+    max-height: 92vh;
+    width: auto;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+
+  .envelope-hint {
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(14px, 2.5vw, 20px);
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 3px;
+    animation: pulse 2.5s ease-in-out infinite;
+    white-space: nowrap;
+    z-index: 6;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.95; }
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  #main-content {
+    opacity: 0;
+    transition: opacity 1.5s ease 0.5s;
+  }
+
+  #main-content.visible {
+    opacity: 1;
+  }
+
+  /* ===== HERO SECTION ===== */
+  .hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 60px 20px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url('https://image.qwenlm.ai/public_source/4a9c7ebb-c8f7-45af-8340-090006d8e6a8/14f6ecad4-de59-4eca-8f42-ced4a9588ee9.png') center/cover;
+    filter: brightness(0.85);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(180deg, rgba(245,240,232,0.3) 0%, rgba(245,240,232,0.1) 50%, rgba(245,240,232,0.5) 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .hero-photo-lace-frame {
+    position: relative;
+    width: 380px;
+    height: 490px;
+    margin: 0 auto 30px;
+    padding: 22px;
+    background: url('https://i.ibb.co/RtWRgp1/d1fbcb259066b7ca2b5b35119edc447c.jpg') center/cover no-repeat;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+
+  .hero-photo-lace-frame::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(253,251,247,0.3);
+    border-radius: 12px;
+    pointer-events: none;
+  }
+
+  .hero-photo-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    z-index: 1;
+  }
+
+  .hero-photo-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-photo-inner::after {
+    content: '';
+    position: absolute;
+    top: 6px; left: 6px; right: 6px; bottom: 6px;
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+
+  .hero-names {
+    font-family: 'Great Vibes', cursive;
+    font-size: 56px;
+    color: #FFF;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .hero-ampersand {
+    font-family: 'Great Vibes', cursive;
+    font-size: 36px;
+    color: #FFF;
+    display: block;
+    margin: -5px 0;
+    text-shadow: 0 2px 15px rgba(0,0,0,0.25);
+  }
+
+  .hero-date {
+    font-family: 'Upper East Side', serif;
+    font-size: 24px;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 6px;
+    text-shadow: 0 1px 10px rgba(0,0,0,0.2);
+  }
+
+  /* ===== НОВЫЙ УНИВЕРСАЛЬНЫЙ РАЗДЕЛИТЕЛЬ ===== */
+  /* Картинка растягивается на всю ширину, но визуально занимает 1 см по высоте */
+  .lace-divider-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 1cm;           /* Фиксированная высота — 1 сантиметр */
+    overflow: hidden;      /* Скрываем лишнее, если картинка вдруг выше */
+    margin: 0;
+    padding: 0;
+    background: transparent;
+  }
+
+  .lace-divider-image img {
+    display: block;
+    width: 100%;           /* Растягиваем по ширине родителя (всему экрану) */
+    height: 100%;          /* Заполняем контейнер высотой 1см */
+    object-fit: cover;     /* Картинка покрывает всю область, сохраняя пропорции */
+    object-position: center center;
+    opacity: 0.75;         /* Оставляем лёгкую полупрозрачность как было */
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Старый декоративный линейный разделитель (с иконкой) оставляем без изменений */
+  .lace-divider-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px 0;
+  }
+
+  .lace-divider-line::before,
+  .lace-divider-line::after {
+    content: '';
+    flex: 1;
+    max-width: 150px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  }
+
+  .lace-divider-line .ornament {
+    color: var(--gold);
+    font-size: 18px;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section {
+    padding: 70px 20px;
+    position: relative;
+  }
+
+  .section-ivory { background: var(--ivory-light); }
+  .section-cream { background: var(--cream); }
+
+  .section-fabric {
+    background: url('https://image.qwenlm.ai/public_source/4a9c7ebb-c8f7-45af-8340-090006d8e6a8/14f6ecad4-de59-4eca-8f42-ced4a9588ee9.png') center/cover fixed;
+    position: relative;
+  }
+
+  .section-fabric::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(245,240,232,0.85);
+  }
+
+  .section-fabric > * { position: relative; z-index: 1; }
+
+  .section-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .section-title-wrap {
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--text-dark);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+.section-title-sub {
+  font-family: 'Great Vibes', cursive;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 40px;
+  color: var(--gold);
+  text-align: right;
+  padding-right: 15%;
+  margin-top: 4px;
+  margin: 0 0 -30px 0;
+  letter-spacing: 1px;
+  line-height: 1;
+  }
+
+  .section-subtitle {
+    font-family: 'Great Vibes', cursive;
+    font-size: 28px;
+    color: var(--gold);
+    margin-bottom: 30px;
+  }
+
+  .section-text {
+    font-size: 20px;
+    line-height: 1.8;
+    color: var(--text-soft);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .welcome-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 2;
+    color: var(--text-soft);
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  /* ===== CALENDAR ===== */
+  .calendar-container {
+    max-width: 360px;
+    margin: 40px auto;
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    border: 1px solid var(--lace);
+  }
+
+  .calendar-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .calendar-day-name {
+    font-size: 12px;
+    color: var(--gold);
+    text-align: center;
+    padding: 8px 0;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Upper East Side', serif;
+    font-size: 16px;
+    color: var(--text-soft);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .calendar-day.highlight {
+    background: var(--gold);
+    color: #FFF;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(184,153,106,0.4);
+    transform: scale(1.1);
+  }
+
+  .calendar-day.empty { visibility: hidden; }
+
+  .calendar-date-label {
+    margin-top: 20px;
+    font-family: 'Great Vibes', cursive;
+    font-size: 32px;
+    color: var(--gold);
+  }
+
+  /* ===== TIMER ===== */
+  .timer-section {
+    background: linear-gradient(135deg, var(--ivory) 0%, var(--ivory-light) 100%);
+  }
+
+  .timer-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+
+  .timer-block {
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 25px 20px;
+    min-width: 100px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+    border: 1px solid var(--lace);
+  }
+
+  .timer-number {
+    font-family: 'Upper East Side', serif;
+    font-size: 48px;
+    color: var(--gold-dark);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .timer-label {
+    font-size: 14px;
+    color: var(--text-soft);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ===== TIMING ===== */
+  .timeline-new {
+    max-width: 560px;
+    margin: 40px auto 0;
+  }
+
+  .timeline-row {
+    display: flex;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(232,223,208,0.4);
+  }
+
+  .timeline-row:last-child { border-bottom: none; }
+
+  .timeline-row-time {
+    font-family: 'Upper East Side', serif;
+    font-size: 42px;
+    color: var(--gold-dark);
+    min-width: 110px;
+    text-align: right;
+    padding-right: 20px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .timeline-row-bar {
+    width: 2px;
+    height: 50px;
+    background: var(--gold-dark);
+    flex-shrink: 0;
+    margin-right: 20px;
+    border-radius: 1px;
+  }
+
+  .timeline-row-content { flex: 1; text-align: left; }
+
+  .timeline-row-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    color: var(--text-dark);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .timeline-row-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-soft);
+    line-height: 1.5;
+  }
+
+  /* ===== VENUE ===== */
+  .venue-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  @media (max-width: 600px) {
+    .venue-cards { grid-template-columns: 1fr; }
+  }
+
+  .venue-card {
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 36px 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+    border: 1px solid var(--lace);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 280px;
+  }
+
+  .venue-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--text-dark);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .venue-card-address {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    flex-grow: 1;
+  }
+
+  .venue-card-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background: var(--gold);
+    color: #FFF;
+    text-decoration: none;
+    border-radius: 30px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    align-self: center;
+  }
+
+  .venue-card-btn:hover {
+    background: var(--gold-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(184,153,106,0.3);
+  }
+
+  /* ===== DRESS CODE ===== */
+  .dresscode-section-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .dresscode-group { margin-bottom: 40px; }
+  .dresscode-group:last-child { margin-bottom: 0; }
+
+  .dresscode-group-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 36px;
+    color: var(--gold);
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .dresscode-circles-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 10px 0;
+  }
+
+  .dresscode-circle {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 50%;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    transition: transform 0.3s ease;
+  }
+
+  .dresscode-circle:hover { transform: scale(1.15); }
+
+  .dresscode-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--text-soft);
+    max-width: 500px;
+    margin: 30px auto 0;
+    line-height: 1.8;
+    text-align: center;
+  }
+
+  /* ===== DETAILS ===== */
+  .details-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 20px;
+    line-height: 2;
+    color: var(--text-soft);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* ===== FORM ===== */
+  .form-section { background: var(--cream); position: relative; }
+
+  .form-container {
+    max-width: 560px;
+    margin: 0 auto;
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    border: 1px solid var(--lace);
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-group { margin-bottom: 24px; text-align: left; }
+
+  .form-label {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid var(--lace);
+    border-radius: 10px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: var(--text-dark);
+    background: var(--ivory-light);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(184,153,106,0.15);
+  }
+
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  .form-radio-group { display: flex; gap: 20px; flex-wrap: wrap; }
+
+  .form-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 17px;
+    color: var(--text-soft);
+    cursor: pointer;
+  }
+
+  .form-radio-label input[type="radio"],
+  .form-radio-label input[type="checkbox"] {
+    accent-color: var(--gold);
+    width: 18px;
+    height: 18px;
+  }
+
+  .form-checkbox-group { display: flex; flex-direction: column; gap: 10px; }
+
+  .form-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--gold);
+    color: #FFF;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    margin-top: 10px;
+  }
+
+  .form-submit:hover {
+    background: var(--gold-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(184,153,106,0.3);
+  }
+
+  .form-success { display: none; text-align: center; padding: 40px 20px; }
+  .form-success.show { display: block; }
+  .form-success-icon { font-size: 60px; margin-bottom: 16px; }
+  .form-success-text { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--text-dark); }
+
+  .conditional-field { margin-top: 12px; padding-left: 26px; display: none; }
+  .conditional-field.show { display: block; }
+  .conditional-field .form-input { max-width: 300px; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: var(--ivory);
+    padding: 60px 20px 40px;
+    text-align: center;
+  }
+
+  .footer-names {
+    font-family: 'Great Vibes', cursive;
+    font-size: 42px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .footer-names-text {
+    font-family: 'Great Vibes', cursive;
+    font-size: 30px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+
+  .footer-date {
+    font-family: 'Upper East Side', serif;
+    font-size: 18px;
+    color: var(--text-soft);
+    letter-spacing: 3px;
+  }
+
+  /* ===== SCROLL ANIMATIONS ===== */
+  .anim-element {
+    opacity: 0;
+    transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .anim-fade-up {
+    transform: translateY(50px);
+  }
+
+  .anim-fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .anim-fade-left {
+    transform: translateX(-60px);
+  }
+
+  .anim-fade-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .anim-fade-right {
+    transform: translateX(60px);
+  }
+
+  .anim-fade-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .anim-scale {
+    transform: scale(0.9);
+  }
+
+  .anim-scale.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .anim-lace {
+    opacity: 0;
+    transform: scaleX(0.3);
+    transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .anim-lace.visible {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  /* Stagger delays */
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.25s; }
+  .delay-3 { transition-delay: 0.4s; }
+  .delay-4 { transition-delay: 0.55s; }
+  .delay-5 { transition-delay: 0.7s; }
+  .delay-6 { transition-delay: 0.85s; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .hero-names { font-size: 40px; }
+    .hero-photo-lace-frame { width: 300px; height: 390px; padding: 16px; }
+    .section-title { font-size: 24px; }
+    .section-title-sub { font-size: 20px; padding-right: 8%; }
+    .timer-number { font-size: 36px; }
+    .timer-block { min-width: 75px; padding: 18px 14px; }
+    .section { padding: 50px 16px; }
+    .form-container { padding: 30px 20px; }
+    .venue-card { min-height: auto; }
+    .timeline-row-time { font-size: 32px; min-width: 90px; padding-right: 14px; }
+    .timeline-row-bar { height: 40px; margin-right: 14px; }
+    .timeline-row-title { font-size: 17px; }
+    .dresscode-group-title { font-size: 30px; }
+    .dresscode-circle { width: 40px; height: 40px; min-width: 40px; }
+    .dresscode-circles-row { gap: 10px; }
+  }
+/* ===== АНИМАЦИЯ КНОПКИ ОТПРАВКИ ===== */
+.form-submit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.form-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-text, .btn-loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-loader svg {
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Анимация пульсации для кнопки во время отправки */
+.form-submit.loading {
+  animation: pulse-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-loading {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Дополнительная анимация для формы */
+.form-container.sending {
+  position: relative;
+}
+
+.form-container.sending::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(253, 251, 247, 0.8);
+  border-radius: 20px;
+  z-index: 2;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== ENVELOPE SCREEN ===== -->
+<div id="envelope-screen">
+  <div class="envelope-container" id="envelope" onclick="openEnvelope()">
+    <img class="envelope-image" src="https://i.ibb.co/W46CsK58/Cf-Cevn-Jh6-K3-Lg7l-W2f-Fn-F0-ZKJ2-K8-It-C0-Lkl-N4c-Mf-KPLXht9-YSHlixrjo-Op-LBVj-OM6bi7-LSnys-EGg-I0-E2-BXGXSt.jpg" alt="Приглашение">
+    <div class="envelope-hint">нажмите, чтобы открыть</div>
+  </div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div id="main-content">
+
+  <!-- HERO -->
+  <section class="hero-section">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-photo-lace-frame anim-element anim-scale">
+        <div class="hero-photo-inner">
+          <img id="hero-photo" src="https://i.ibb.co/WN1th2zF/1.jpg" alt="Даниил и София">
+        </div>
+      </div>
+      <h1 class="hero-names anim-element anim-fade-up delay-1">Даниил</h1>
+      <span class="hero-ampersand anim-element anim-fade-up delay-2">&</span>
+      <h1 class="hero-names anim-element anim-fade-up delay-3">София</h1>
+      <p class="hero-date anim-element anim-fade-up delay-4">08 / 08 / 26</p>
+    </div>
+  </section>
+
+  <!-- LACE (разделитель 1см, растянут на всю ширину) -->
+  <div class="lace-divider-image anim-element anim-lace">
+    <img src="https://i.ibb.co/yBBG51SK/image.jpg" alt="Кружево">
+  </div>
+
+  <!-- WELCOME -->
+  <section class="section section-ivory">
+    <div class="section-inner">
+      <h2 class="section-title anim-element anim-fade-up">Дорогие гости!</h2>
+      <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament">♥</span></div>
+      <p class="welcome-text anim-element anim-fade-up delay-2" id="welcome-text">
+        Мы очень хотим сделать этот день особенным, поэтому приглашаем Вас разделить с нами торжество, посвящённое дню нашей свадьбы. Ваше присутствие — самый ценный подарок для нас!
+      </p>
+    </div>
+  </section>
+
+  <!-- LACE (разделитель 1см) -->
+  <div class="lace-divider-image anim-element anim-lace">
+    <img src="https://i.ibb.co/yBBG51SK/image.jpg" alt="Кружево">
+  </div>
+
+  <!-- CALENDAR -->
+  <section class="section section-cream">
+    <div class="section-inner">
+      <h2 class="section-title anim-element anim-fade-up">Дата торжества</h2>
+      <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament">♥</span></div>
+      <div class="calendar-container anim-element anim-scale delay-2">
+        <div class="calendar-header">Август 2026</div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        <div class="calendar-date-label">8 августа 2026</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LACE (разделитель 1см) -->
+  <div class="lace-divider-image anim-element anim-lace">
+    <img src="https://i.ibb.co/yBBG51SK/image.jpg" alt="Кружево">
+  </div>
+
+  <!-- TIMER -->
+  <section class="section timer-section">
+    <div class="section-inner">
+      <h2 class="section-title anim-element anim-fade-up">До свадьбы осталось</h2>
+      <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament">♥</span></div>
+      <div class="timer-container">
+        <div class="timer-block anim-element anim-scale delay-2">
+          <div class="timer-number" id="timer-days">0</div>
+          <div class="timer-label" id="timer-days-label">дней</div>
+        </div>
+        <div class="timer-block anim-element anim-scale delay-3">
+          <div class="timer-number" id="timer-hours">0</div>
+          <div class="timer-label" id="timer-hours-label">часов</div>
+        </div>
+        <div class="timer-block anim-element anim-scale delay-4">
+          <div class="timer-number" id="timer-minutes">0</div>
+          <div class="timer-label" id="timer-minutes-label">минут</div>
+        </div>
+        <div class="timer-block anim-element anim-scale delay-5">
+          <div class="timer-number" id="timer-seconds">0</div>
+          <div class="timer-label" id="timer-seconds-label">секунд</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LACE (разделитель 1см) -->
+  <div class="lace-divider-image anim-element anim-lace">
+    <img src="https://i.ibb.co/yBBG51SK/image.jpg" alt="Кружево">
+  </div>
+
+  <!-- TIMING -->
+  <section class="section section-fabric">
+    <div class="section-inner">
+      <h2 class="section-title anim-element anim-fade-up">Тайминг</h2>
+      <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament"></span></div>
+      <div class="timeline-new" id="timeline-new"></div>
+    </div>
+  </section>
+
+  <!-- LACE (разделитель 1см) -->
+  <div class="lace-divider-image anim-element anim-lace">
+    <img src="https://i.ibb.co/yBBG51SK/image.jpg" alt="Кружево">
+  </div>
+
+  <!-- VENUE -->
+  <section class="section section-ivory">
+    <div class="section-inner">
+      <div class="section-title-wrap">
+        <h2 class="section-title anim-element anim-fade-up">Место проведения</h2>
+        <div class="section-title-sub anim-element anim-fade-up delay-1">свадьбы</div>
+      </div>
+      <div class="lace-divider-line anim-element anim-fade-up delay-2"><span class="ornament">♥</span></div>
+      <div class="venue-cards">
+        <div class="venue-card anim-element anim-fade-left delay-3">
+          <div class="venue-card-title">Регистрация</div>
+          <div class="venue-card-address">Отдел ЗАГС по Калининскому району<br>г. Чебоксары, ул. 50 лет Октября, 10А</div>
+          <a class="venue-card-btn" href="https://yandex.ru/maps/?text=Чебоксары,+ул.+50+лет+Октября,+10А" target="_blank" rel="noopener">Посмотреть на карте</a>
+        </div>
+        <div class="venue-card anim-element anim-fade-right delay-3">
+          <div class="venue-card-title">Праздничный банкет</div>
+          <div class="venue-card-address">Кафе «Ванильное небо»<br>Московский просп., 38, корп. 3, Чебоксары</div>
+          <a class="venue-card-btn" href="https://yandex.ru/maps/?text=Чебоксары,+Московский+просп.,+38,+корп.+3" target="_blank" rel="noopener">Посмотреть на карте</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LACE (разделитель 1см) -->
+  <div class="lace-divider-image anim-element anim-lace">
+    <img src="https://i.ibb.co/yBBG51SK/image.jpg" alt="Кружево">
+  </div>
+
+  <!-- DRESS CODE -->
+  <section class="section section-cream">
+    <div class="section-inner">
+      <h2 class="section-title anim-element anim-fade-up">Дресс-код</h2>
+      <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament">♥</span></div>
+      <div class="dresscode-section-inner">
+        <div class="dresscode-group">
+          <div class="dresscode-group-title anim-element anim-fade-up delay-2">Для леди</div>
+          <div class="dresscode-circles-row anim-element anim-fade-up delay-3" id="ladies-colors"></div>
+        </div>
+        <div class="dresscode-group">
+          <div class="dresscode-group-title anim-element anim-fade-up delay-3">Для джентльменов</div>
+          <div class="dresscode-circles-row anim-element anim-fade-up delay-4" id="gentlemen-colors"></div>
+        </div>
+      </div>
+      <p class="dresscode-note anim-element anim-fade-up delay-5">Будем признательны, если Ваш наряд будет выдержан в предложенных пастельных тонах. Это поможет создать гармоничную и нежную атмосферу нашего праздника </p>
+    </div>
+  </section>
+
+  <!-- LACE (разделитель 1см) -->
+  <div class="lace-divider-image anim-element anim-lace">
+    <img src="https://i.ibb.co/yBBG51SK/image.jpg" alt="Кружево">
+  </div>
+
+  <!-- DETAILS -->
+  <section class="section section-ivory">
+    <div class="section-inner">
+      <h2 class="section-title anim-element anim-fade-up">Детали</h2>
+      <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament">♥</span></div>
+      <p class="details-text anim-element anim-fade-up delay-2" id="details-text">
+        Просим не обременять себя выбором цветов — Ваше присутствие скрасит этот день ярче любых букетов. Мы будем рады разделить с Вами радость этого события без лишних хлопот.
+      </p>
+    </div>
+  </section>
+
+  <!-- LACE (разделитель 1см) -->
+  <div class="lace-divider-image anim-element anim-lace">
+    <img src="https://i.ibb.co/yBBG51SK/image.jpg" alt="Кружево">
+  </div>
+
+<!-- FORM -->
+  <section class="section form-section" id="rsvp">
+    <div class="section-inner">
+      <h2 class="section-title anim-element anim-fade-up">Анкета гостя</h2>
+      <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament">♥</span></div>
+      <p class="section-text anim-element anim-fade-up delay-2" style="margin-bottom: 30px;">Чтобы мы могли подготовить всё наилучшим образом для нашего особенного дня, будем признательны, если Вы заполните анкету до 20 июля. Если по непредвиденным обстоятельствам Ваши планы изменятся, пожалуйста, сообщите нам</p>
+      <div class="form-container anim-element anim-scale delay-3">
+        <form id="rsvp-form">
+          <div class="form-group">
+            <label class="form-label">Подтверждение присутствия *</label>
+            <div class="form-radio-group">
+              <label class="form-radio-label">
+                <input type="radio" name="attendance" value="Да, приду" required> Да, приду
+              </label>
+              <label class="form-radio-label">
+                <input type="radio" name="attendance" value="К сожалению, не смогу"> К сожалению, не смогу
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Имя и фамилия *</label>
+            <input type="text" class="form-input" name="name" required placeholder="Введите ваше имя и фамилию">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Номер телефона *</label>
+            <input type="tel" class="form-input" name="phone" required placeholder="+7 (___) ___-__-__">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Вы будете один?</label>
+            <div class="form-radio-group">
+              <label class="form-radio-label">
+                <input type="radio" name="with_partner" value="Да, буду один" onchange="togglePartnerField(false)"> Да, буду один
+              </label>
+              <label class="form-radio-label">
+                <input type="radio" name="with_partner" value="Нет" onchange="togglePartnerField(true)"> Нет
+              </label>
+            </div>
+            <div class="conditional-field" id="partner-field">
+              <input type="text" class="form-input" name="partner_count" placeholder="Укажите количество гостей">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Будут ли с вами дети? Если да, укажите количество и возраст</label>
+            <div class="form-radio-group">
+              <label class="form-radio-label">
+                <input type="radio" name="with_children" value="Нет, детей не будет" onchange="toggleChildrenField(false)"> Нет, детей не будет
+              </label>
+              <label class="form-radio-label">
+                <input type="radio" name="with_children" value="Да" onchange="toggleChildrenField(true)"> Да
+              </label>
+            </div>
+            <div class="conditional-field" id="children-field">
+              <input type="text" class="form-input" name="children_info" placeholder="Например: 2 детей, 5 и 8 лет">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Придёте ли в ЗАГС?</label>
+            <div class="form-radio-group">
+              <label class="form-radio-label">
+                <input type="radio" name="zags" value="Да"> Да
+              </label>
+              <label class="form-radio-label">
+                <input type="radio" name="zags" value="Нет"> Нет
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Предпочтения в напитках</label>
+            <div class="form-checkbox-group">
+              <label class="form-radio-label"><input type="checkbox" name="drinks" value="Шампанское"> Шампанское</label>
+              <label class="form-radio-label"><input type="checkbox" name="drinks" value="Вино"> Вино</label>
+              <label class="form-radio-label"><input type="checkbox" name="drinks" value="Самогон"> Самогон</label>
+              <label class="form-radio-label"><input type="checkbox" name="drinks" value="Коньяк/Виски"> Коньяк / Виски</label>
+              <label class="form-radio-label"><input type="checkbox" name="drinks" value="Безалкогольные"> Безалкогольные напитки</label>
+            </div>
+          </div>
+
+          <button type="submit" class="form-submit" id="submit-btn">
+            <span class="btn-text">Отправить</span>
+            <span class="btn-loader" style="display: none;">
+              <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <style>
+                  .spinner_ajPY {
+                    transform-origin: center;
+                    animation: spinner_AtaB 0.75s infinite linear;
+                  }
+                  @keyframes spinner_AtaB {
+                    100% {
+                      transform: rotate(360deg);
+                    }
+                  }
+                </style>
+                <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" fill="currentColor"/>
+                <path d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z" class="spinner_ajPY" fill="currentColor"/>
+              </svg>
+            </span>
+          </button>
+        </form>
+        <div class="form-success" id="form-success">
+          <div class="form-success-icon">💌</div>
+          <div class="form-success-text">Спасибо! Ваш ответ принят.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- LACE (разделитель 1см) -->
+  <div class="lace-divider-image anim-element anim-lace">
+    <img src="https://i.ibb.co/yBBG51SK/image.jpg" alt="Кружево">
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-names anim-element anim-fade-up">С нетерпением</div>
+    <div class="footer-names-text anim-element anim-fade-up">Ждем встречи с Вами на нашем торжестве</div>
+    <div class="footer-names anim-element anim-fade-up">Даниил & София</div>
+    <div class="footer-date anim-element anim-fade-up delay-1">08 · 08 · 2026</div>
+  </footer>
+
+</div>
+
+<script>
+const HERO_PHOTO_URL = 'https://drive.google.com/uc?export=view&id=1ljPD9Z7NfNNNdRzVxcfpTDzPdD2h8NMG';
+const WEDDING_DATE = new Date('2026-08-08T00:00:00');
+
+const WELCOME_TEXT = 'Мы очень хотим сделать этот день особенным, поэтому приглашаем Вас разделить с нами торжество, посвящённое дню нашей свадьбы. Ваше присутствие — самый ценный подарок для нас!';
+
+const TIMING = [
+  { time: '14:00', title: 'Регистрация в ЗАГСе', desc: 'Отдел ЗАГС по Калининскому району' },
+  { time: '17:30', title: 'Сборы гостей', desc: 'Встречаемся у кафе «Ванильное небо»' },
+  { time: '18:00', title: 'Праздничный банкет', desc: 'Кафе «Ванильное небо»' },
+  { time: '23:00', title: 'Окончание торжества', desc: '' }
+];
+
+const LADIES_COLORS = ['#F5D5D5', '#E8B4B8', '#D5E8D4', '#B8D4B0', '#D5E5F5', '#B8D4E8', '#E8D5C4', '#D4B896', '#E5D5F5', '#D4B8E8'];
+const GENTLEMEN_COLORS = ['#2C2C2C', '#1A1A1A', '#9E9E9E', '#BDBDBD', '#8B7355', '#A0896C'];
+
+const DETAILS_TEXT = 'Просим не обременять себя выбором цветов — Ваше присутствие скрасит этот день ярче любых букетов. Мы будем рады разделить с Вами радость этого события без лишних хлопот.';
+const FORM_SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbwaIej9zt1XPQ6eeqwKyjMW1w1bkj1CWYAhYIEdU6nqypGNlW0awae5P9mXUJVbikG2ZQ/exec';
+
+function pluralizeDays(n) {
+  const abs = Math.abs(n) % 100;
+  const lastDigit = abs % 10;
+  if (abs > 10 && abs < 20) return 'дней';
+  if (lastDigit > 1 && lastDigit < 5) return 'дня';
+  if (lastDigit === 1) return 'день';
+  return 'дней';
+}
+
+function pluralizeHours(n) {
+  const abs = Math.abs(n) % 100;
+  const lastDigit = abs % 10;
+  if (abs > 10 && abs < 20) return 'часов';
+  if (lastDigit > 1 && lastDigit < 5) return 'часа';
+  if (lastDigit === 1) return 'час';
+  return 'часов';
+}
+
+function pluralizeMinutes(n) {
+  const abs = Math.abs(n) % 100;
+  const lastDigit = abs % 10;
+  if (abs > 10 && abs < 20) return 'минут';
+  if (lastDigit > 1 && lastDigit < 5) return 'минуты';
+  if (lastDigit === 1) return 'минута';
+  return 'минут';
+}
+
+function pluralizeSeconds(n) {
+  const abs = Math.abs(n) % 100;
+  const lastDigit = abs % 10;
+  if (abs > 10 && abs < 20) return 'секунд';
+  if (lastDigit > 1 && lastDigit < 5) return 'секунды';
+  if (lastDigit === 1) return 'секунда';
+  return 'секунд';
+}
+
+document.getElementById('hero-photo').src = HERO_PHOTO_URL;
+
+function openEnvelope() {
+  const envelope = document.getElementById('envelope');
+  envelope.classList.add('open');
+  setTimeout(() => {
+    document.getElementById('envelope-screen').classList.add('hidden');
+    document.getElementById('main-content').classList.add('visible');
+    document.body.style.overflow = 'auto';
+    // Trigger hero animations after content is visible
+    setTimeout(() => {
+      document.querySelectorAll('.hero-section .anim-element, .hero-section ~ .anim-element').forEach(el => {
+        el.classList.add('visible');
+      });
+    }, 300);
+  }, 1200);
+}
+
+document.body.style.overflow = 'hidden';
+
+function generateCalendar() {
+  const grid = document.getElementById('calendar-grid');
+  const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  dayNames.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'calendar-day-name';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+  const firstDay = new Date(2026, 7, 1).getDay();
+  const offset = (firstDay + 6) % 7;
+  const daysInMonth = 31;
+  const highlightDay = 8;
+  for (let i = 0; i < offset; i++) {
+    const el = document.createElement('div');
+    el.className = 'calendar-day empty';
+    grid.appendChild(el);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    el.className = 'calendar-day' + (d === highlightDay ? ' highlight' : '');
+    el.textContent = d;
+    grid.appendChild(el);
+  }
+}
+
+function updateTimer() {
+  const now = new Date();
+  const diff = WEDDING_DATE - now;
+  if (diff <= 0) {
+    document.getElementById('timer-days').textContent = '0';
+    document.getElementById('timer-hours').textContent = '0';
+    document.getElementById('timer-minutes').textContent = '0';
+    document.getElementById('timer-seconds').textContent = '0';
+    document.getElementById('timer-days-label').textContent = 'дней';
+    document.getElementById('timer-hours-label').textContent = 'часов';
+    document.getElementById('timer-minutes-label').textContent = 'минут';
+    document.getElementById('timer-seconds-label').textContent = 'секунд';
+    return;
+  }
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  document.getElementById('timer-days').textContent = days;
+  document.getElementById('timer-hours').textContent = hours;
+  document.getElementById('timer-minutes').textContent = minutes;
+  document.getElementById('timer-seconds').textContent = seconds;
+  document.getElementById('timer-days-label').textContent = pluralizeDays(days);
+  document.getElementById('timer-hours-label').textContent = pluralizeHours(hours);
+  document.getElementById('timer-minutes-label').textContent = pluralizeMinutes(minutes);
+  document.getElementById('timer-seconds-label').textContent = pluralizeSeconds(seconds);
+}
+
+function renderTiming() {
+  const container = document.getElementById('timeline-new');
+  TIMING.forEach((t, idx) => {
+    const row = document.createElement('div');
+    row.className = 'timeline-row anim-element anim-fade-up delay-' + Math.min(idx + 1, 6);
+    row.innerHTML = `
+      <div class="timeline-row-time">${t.time}</div>
+      <div class="timeline-row-bar"></div>
+      <div class="timeline-row-content">
+        <div class="timeline-row-title">${t.title}</div>
+        ${t.desc ? `<div class="timeline-row-desc">${t.desc}</div>` : ''}
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function renderCircles(containerId, colors) {
+  const container = document.getElementById(containerId);
+  colors.forEach((c, idx) => {
+    const div = document.createElement('div');
+    div.className = 'dresscode-circle anim-element anim-scale delay-' + Math.min(idx + 1, 6);
+    div.style.background = c;
+    container.appendChild(div);
+  });
+}
+
+document.getElementById('welcome-text').textContent = WELCOME_TEXT;
+document.getElementById('details-text').textContent = DETAILS_TEXT;
+
+generateCalendar();
+renderTiming();
+renderCircles('ladies-colors', LADIES_COLORS);
+renderCircles('gentlemen-colors', GENTLEMEN_COLORS);
+updateTimer();
+setInterval(updateTimer, 1000);
+
+// Smooth scroll animations with IntersectionObserver
+const animObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, {
+  threshold: 0.15,
+  rootMargin: '0px 0px -50px 0px'
+});
+
+document.querySelectorAll('.anim-element').forEach(el => {
+  animObserver.observe(el);
+});
+
+function togglePartnerField(show) {
+  document.getElementById('partner-field').classList.toggle('show', show);
+}
+
+function toggleChildrenField(show) {
+  document.getElementById('children-field').classList.toggle('show', show);
+}
+
+// Функция для форматирования телефона
+function formatPhoneNumber(e) {
+  let val = e.target.value.replace(/\D/g, '');
+  if (val.startsWith('8')) val = '7' + val.slice(1);
+  if (val.startsWith('7')) {
+    let formatted = '+7';
+    if (val.length > 1) formatted += ' (' + val.slice(1, 4);
+    if (val.length >= 4) formatted += ') ' + val.slice(4, 7);
+    if (val.length >= 7) formatted += '-' + val.slice(7, 9);
+    if (val.length >= 9) formatted += '-' + val.slice(9, 11);
+    e.target.value = formatted;
+  }
+}
+
+// Добавляем форматирование телефона
+document.querySelector('input[name="phone"]').addEventListener('input', formatPhoneNumber);
+
+// Обработчик отправки формы с анимацией
+document.getElementById('rsvp-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  // Получаем кнопку и элементы формы
+  const submitBtn = document.getElementById('submit-btn');
+  const btnText = submitBtn.querySelector('.btn-text');
+  const btnLoader = submitBtn.querySelector('.btn-loader');
+  const formContainer = document.querySelector('.form-container');
+  
+  // Блокируем кнопку и показываем анимацию загрузки
+  submitBtn.disabled = true;
+  btnText.style.display = 'none';
+  btnLoader.style.display = 'inline-flex';
+  submitBtn.classList.add('loading');
+  formContainer.classList.add('sending');
+  
+  // Собираем данные формы
+  const formData = new FormData(this);
+  const data = {};
+  formData.forEach((value, key) => {
+    if (key === 'drinks') {
+      if (!data.drinks) data.drinks = [];
+      data.drinks.push(value);
+    } else {
+      data[key] = value;
+    }
+  });
+  if (data.drinks) data.drinks = data.drinks.join(', ');
+  
+  try {
+    // Отправляем данные
+    if (FORM_SUBMIT_URL) {
+      const response = await fetch(FORM_SUBMIT_URL, { 
+        method: 'POST', 
+        mode: 'no-cors', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify(data) 
+      });
+      
+      // Небольшая задержка для имитации обработки
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      showSuccess();
+    } else {
+      console.log('Данные формы:', data);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      showSuccess();
+    }
+  } catch (error) {
+    console.error('Ошибка отправки:', error);
+    // Восстанавливаем кнопку при ошибке
+    btnText.style.display = 'inline';
+    btnLoader.style.display = 'none';
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('loading');
+    formContainer.classList.remove('sending');
+    
+    alert('Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз или свяжитесь с нами напрямую.');
+  }
+});
+
+function showSuccess() {
+  const form = document.getElementById('rsvp-form');
+  const successDiv = document.getElementById('form-success');
+  const formContainer = document.querySelector('.form-container');
+  
+  // Убираем анимацию загрузки
+  formContainer.classList.remove('sending');
+  
+  // Показываем сообщение об успехе
+  form.style.display = 'none';
+  successDiv.classList.add('show');
+  
+  // Добавляем анимацию появления
+  successDiv.style.animation = 'fadeInUp 0.6s ease';
+}
+
+// Добавляем CSS для анимации появления сообщения об успехе (если ещё нет)
+if (!document.querySelector('#dynamic-form-styles')) {
+  const style = document.createElement('style');
+  style.id = 'dynamic-form-styles';
+  style.textContent = `
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+</script>
+
+</body>
+</html>
