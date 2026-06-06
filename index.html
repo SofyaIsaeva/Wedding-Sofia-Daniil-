@@ -908,6 +908,75 @@
     opacity: 1;
   }
 }
+
+/* ===== MUSIC BUTTON ===== */
+.music-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 20px 30px 20px; /* увеличен отступ снизу до 30px */
+  position: relative;
+  z-index: 2;
+}
+
+.music-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: var(--gold);
+  color: #FFF;
+  border: none;
+  border-radius: 40px;
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  backdrop-filter: blur(5px);
+}
+
+.music-btn:hover {
+  background: var(--gold-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(184,153,106,0.4);
+}
+
+.music-btn:active {
+  transform: translateY(0);
+}
+
+.music-btn.playing {
+  background: var(--gold-dark);
+  animation: pulse-gentle 2s ease-in-out infinite;
+}
+
+@keyframes pulse-gentle {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(184,153,106,0.3);
+  }
+  50% {
+    box-shadow: 0 6px 25px rgba(184,153,106,0.6);
+  }
+}
+
+.music-icon-emoji {
+  font-size: 22px;
+}
+
+@media (max-width: 600px) {
+  .music-btn {
+    padding: 10px 24px;
+    font-size: 16px;
+    gap: 8px;
+  }
+  .music-icon-emoji {
+    font-size: 18px;
+  }
+}
 </style>
 </head>
 <body>
@@ -947,6 +1016,13 @@
 
   <!-- WELCOME -->
   <section class="section section-ivory">
+    <!-- MUSIC BUTTON -->
+    <div class="music-button-container anim-element anim-fade-up delay-3">
+      <button id="music-toggle-btn" class="music-btn">
+        <span class="music-icon-emoji">🔊</span>
+        <span id="music-btn-text">нажмите для включения</span>
+      </button>
+    </div>
     <div class="section-inner">
       <h2 class="section-title anim-element anim-fade-up">Дорогие гости!</h2>
       <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament">♥</span></div>
@@ -1217,6 +1293,11 @@
   </footer>
 
 </div>
+
+<!-- ===== AUDIO PLAYER (скрытый) ===== -->
+<audio id="bg-music" loop preload="auto">
+  <source src="https://drive.google.com/uc?export=download&id=1Rr4suqW3eBEkNkElsYyWvBiqM0dbYiNh" type="audio/mpeg">
+</audio>
 
 <script>
 const HERO_PHOTO_URL = 'https://lh3.googleusercontent.com/d/1ljPD9Z7NfNNNdRzVxcfpTDzPdD2h8NMG=w1000?authuser=0';
@@ -1506,6 +1587,52 @@ if (!document.querySelector('#dynamic-form-styles')) {
   `;
   document.head.appendChild(style);
 }
+
+// ===== MUSIC PLAYER =====
+const bgMusic = document.getElementById('bg-music');
+const musicBtn = document.getElementById('music-toggle-btn');
+const musicBtnText = document.getElementById('music-btn-text');
+const musicIcon = document.querySelector('#music-toggle-btn .music-icon-emoji');
+let isPlaying = false;
+
+// Устанавливаем громкость (0.5 = 50%, можно менять от 0 до 1)
+bgMusic.volume = 0.5;
+
+function toggleMusic() {
+  if (isPlaying) {
+    bgMusic.pause();
+    musicBtn.classList.remove('playing');
+    musicBtnText.textContent = 'нажмите для включения';
+    musicIcon.textContent = '🔊';
+    isPlaying = false;
+  } else {
+    // Пробуем воспроизвести
+    const playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        // Успешно запустилось
+        musicBtn.classList.add('playing');
+        musicBtnText.textContent = 'музыка играет';
+        musicIcon.textContent = '🎵';
+        isPlaying = true;
+      }).catch(error => {
+        console.log('Ошибка воспроизведения:', error);
+        // Если браузер заблокировал автовоспроизведение
+        alert('Не удалось воспроизвести музыку. Попробуйте ещё раз.');
+      });
+    }
+  }
+}
+
+if (musicBtn) {
+  musicBtn.addEventListener('click', toggleMusic);
+}
+
+// Обработка ошибок загрузки аудио
+bgMusic.addEventListener('error', function(e) {
+  console.log('Ошибка загрузки аудио. Возможно, Google Drive блокирует прямое воспроизведение.');
+  console.log('Попробуйте использовать другой хостинг для аудиофайла.');
+});
 </script>
 
 </body>
