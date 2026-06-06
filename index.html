@@ -910,6 +910,108 @@
     opacity: 1;
   }
 }
+/* ===== MUSIC BUTTON ===== */
+.music-section {
+  position: relative;
+  background: var(--ivory-light);
+  padding: 30px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.music-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: #FFF;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(184,153,106,0.3);
+  overflow: hidden;
+}
+
+.music-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.music-button:hover::before {
+  left: 100%;
+}
+
+.music-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(184,153,106,0.4);
+}
+
+.music-button:active {
+  transform: translateY(0);
+}
+
+.music-icon {
+  font-size: 24px;
+  transition: transform 0.3s ease;
+}
+
+.music-button.playing .music-icon {
+  animation: musicPulse 1s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.music-text {
+  font-size: 16px;
+}
+
+.music-button.playing .music-text::before {
+  content: '♫ ';
+  animation: fadeInOut 1s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Анимация для волн при проигрывании */
+.music-button.playing {
+  background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+  animation: buttonGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes buttonGlow {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(184,153,106,0.3);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(184,153,106,0.6);
+  }
+}
 </style>
 </head>
 <body>
@@ -946,6 +1048,14 @@
   <div class="lace-divider-image anim-element anim-lace">
     <img src="https://drive.google.com/thumbnail?id=1HL4E0CH34AE2id9pBJiBd0ucxWyENL4v&sz=w1000" alt="Кружево">
   </div>
+
+  <!-- MUSIC SECTION -->
+<section class="music-section">
+  <button id="music-button" class="music-button" onclick="toggleMusic()">
+    <span class="music-icon">🎵</span>
+    <span class="music-text" id="music-text">Включить музыку</span>
+  </button>
+</section>
 
   <!-- WELCOME -->
   <section class="section section-ivory">
@@ -1522,6 +1632,83 @@ if (!document.querySelector('#dynamic-form-styles')) {
     }
   `;
   document.head.appendChild(style);
+}
+// ===== МУЗЫКАЛЬНЫЙ ПЛЕЕР =====
+let audio = null;
+let isMusicPlaying = false;
+
+// Функция для инициализации аудио
+function initAudio() {
+  if (!audio) {
+    audio = new Audio();
+    // ВСТАВЬТЕ ВАШУ ССЫЛКУ НА МУЗЫКУ С GOOGLE DISK ЗДЕСЬ
+    // Вариант 1: Прямая ссылка (если получится)
+    audio.src = 'YOUR_MUSIC_URL_HERE';
+    
+    // Вариант 2: Для Google Drive используйте thumbnail (только для аудио может не работать)
+    // Лучше загрузить на другой хостинг или в репозиторий
+    
+    audio.loop = true; // Зацикливаем музыку
+    audio.volume = 0.5; // Громкость 50%
+    
+    // Обработчик ошибок
+    audio.onerror = function() {
+      console.error('Ошибка загрузки музыки');
+      const musicText = document.getElementById('music-text');
+      musicText.textContent = 'Ошибка загрузки';
+      setTimeout(() => {
+        musicText.textContent = 'Включить музыку';
+      }, 2000);
+    };
+  }
+}
+
+function toggleMusic() {
+  initAudio();
+  const button = document.getElementById('music-button');
+  const musicText = document.getElementById('music-text');
+  
+  if (!isMusicPlaying) {
+    // Воспроизводим музыку
+    audio.play().then(() => {
+      isMusicPlaying = true;
+      button.classList.add('playing');
+      musicText.innerHTML = 'Музыка играет';
+    }).catch(error => {
+      console.error('Ошибка воспроизведения:', error);
+      musicText.textContent = 'Нажмите для включения';
+      // В большинстве браузеров требуется взаимодействие пользователя
+      alert('Для воспроизведения музыки нажмите на кнопку');
+    });
+  } else {
+    // Останавливаем музыку
+    audio.pause();
+    isMusicPlaying = false;
+    button.classList.remove('playing');
+    musicText.innerHTML = 'Включить музыку';
+  }
+}
+
+// Автоматическая попытка воспроизведения (не сработает из-за политики браузеров)
+// Но можно попробовать после открытия конверта
+document.addEventListener('DOMContentLoaded', function() {
+  initAudio();
+});
+
+// Попытка воспроизвести после открытия конверта (всё равно может не сработать)
+// Добавьте в функцию openEnvelope вызов tryAutoPlay()
+function tryAutoPlay() {
+  if (audio && !isMusicPlaying) {
+    audio.play().then(() => {
+      isMusicPlaying = true;
+      const button = document.getElementById('music-button');
+      const musicText = document.getElementById('music-text');
+      if (button) {
+        button.classList.add('playing');
+        musicText.innerHTML = 'Музыка играет';
+      }
+    }).catch(e => console.log('Автовоспроизведение заблокировано браузером'));
+  }
 }
 </script>
 
