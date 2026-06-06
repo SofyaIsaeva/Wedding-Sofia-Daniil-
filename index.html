@@ -1642,14 +1642,33 @@ const musicBtn = document.getElementById('music-toggle-btn');
 const musicBtnText = document.getElementById('music-btn-text');
 const musicIcon = document.querySelector('#music-toggle-btn .music-icon-emoji');
 
-// Ссылка на музыку
-const MUSIC_URL = 'https://raw.githubusercontent.com/SofyaIsaeva/Wedding-Sofia-Daniil-/main/music/Indila_-_Love_Story_48105410.mp3';
+// Ссылка на музыку через GitHub Pages (если сайт на GitHub Pages)
+// ВАЖНО: сайт должен быть опубликован на GitHub Pages
+const MUSIC_URL = '/music/Indila_-_Love_Story_48105410.mp3';
 
 function initAudio() {
   if (!audio && MUSIC_URL) {
-    audio = new Audio(MUSIC_URL);
-    audio.loop = true; // Зацикливаем музыку
-    audio.volume = 0.5; // Громкость 50%
+    audio = new Audio();
+    audio.loop = true;
+    audio.volume = 0.5;
+    
+    // Загружаем файл через fetch для обхода CORS
+    fetch(MUSIC_URL)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        audio.src = url;
+        audio.load();
+        
+        audio.addEventListener('canplaythrough', () => {
+          console.log('Музыка загружена');
+        });
+      })
+      .catch(error => {
+        console.error('Ошибка загрузки музыки:', error);
+        musicBtnText.textContent = 'ошибка загрузки';
+        musicBtn.disabled = true;
+      });
     
     // Обработчики событий
     audio.addEventListener('play', () => {
@@ -1665,12 +1684,6 @@ function initAudio() {
       musicBtnText.textContent = 'нажмите для включения';
       musicIcon.textContent = '🔊';
     });
-    
-    audio.addEventListener('error', (e) => {
-      console.error('Ошибка загрузки музыки:', e);
-      musicBtnText.textContent = 'ошибка загрузки';
-      musicBtn.disabled = true;
-    });
   }
 }
 
@@ -1678,17 +1691,13 @@ function toggleMusic() {
   initAudio();
   
   if (!audio) {
-    console.warn('Музыка ещё не загружена или ссылка не указана');
-    if (!MUSIC_URL) {
-      alert('Музыкальная ссылка пока не добавлена. Пожалуйста, добавьте её позже 🎵');
-    }
+    console.warn('Музыка ещё не загружена');
     return;
   }
   
   if (isPlaying) {
     audio.pause();
   } else {
-    // Автоплей может быть заблокирован браузером, но пользователь уже кликнул
     audio.play().catch(error => {
       console.error('Ошибка воспроизведения:', error);
       alert('Пожалуйста, нажмите кнопку ещё раз, чтобы включить музыку 🎵');
@@ -1696,17 +1705,9 @@ function toggleMusic() {
   }
 }
 
-// Добавляем обработчик клика
 if (musicBtn) {
   musicBtn.addEventListener('click', toggleMusic);
 }
-
-// Предзагрузка аудио при первом взаимодействии с сайтом
-document.addEventListener('click', function initAudioOnFirstClick() {
-  if (!audio && MUSIC_URL) {
-    initAudio();
-  }
-}, { once: true });
 </script>
 
 </body>
