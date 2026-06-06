@@ -1638,74 +1638,107 @@ if (!document.querySelector('#dynamic-form-styles')) {
 // ===== MUSIC PLAYER =====
 let audio = null;
 let isPlaying = false;
+let isAudioReady = false;
 const musicBtn = document.getElementById('music-toggle-btn');
 const musicBtnText = document.getElementById('music-btn-text');
 const musicIcon = document.querySelector('#music-toggle-btn .music-icon-emoji');
-  
-const MUSIC_URL = 'https://files.catbox.moe/8glj4j.mp3';
 
+// Ссылка на музыку из вашего репозитория (относительный путь)
+const MUSIC_URL = '/music/Indila_-_Love_Story_48105410.mp3';
+
+// Инициализируем аудио сразу (безопасно, через HTTPS)
 function initAudio() {
-  if (!audio && MUSIC_URL) {
-    audio = new Audio();
+  if (!audio) {
+    audio = new Audio(MUSIC_URL);
     audio.loop = true;
     audio.volume = 0.5;
-    
-    // Загружаем файл через fetch для обхода CORS
-    fetch(MUSIC_URL)
-      .then(response => response.blob())
-      .then(blob => {
-        const url = URL.createObjectURL(blob);
-        audio.src = url;
-        audio.load();
-        
-        audio.addEventListener('canplaythrough', () => {
-          console.log('Музыка загружена');
-        });
-      })
-      .catch(error => {
-        console.error('Ошибка загрузки музыки:', error);
-        musicBtnText.textContent = 'ошибка загрузки';
-        musicBtn.disabled = true;
-      });
+    audio.preload = 'auto';
     
     // Обработчики событий
+    audio.addEventListener('canplaythrough', () => {
+      console.log('Музыка загружена и готова к воспроизведению');
+      isAudioReady = true;
+      if (musicBtn) musicBtn.disabled = false;
+    });
+    
     audio.addEventListener('play', () => {
       isPlaying = true;
-      musicBtn.classList.add('playing');
-      musicBtnText.textContent = 'музыка играет';
-      musicIcon.textContent = '🎵';
+      if (musicBtn) {
+        musicBtn.classList.add('playing');
+        musicBtnText.textContent = 'музыка играет';
+        musicIcon.textContent = '🎵';
+      }
     });
     
     audio.addEventListener('pause', () => {
       isPlaying = false;
-      musicBtn.classList.remove('playing');
-      musicBtnText.textContent = 'нажмите для включения';
-      musicIcon.textContent = '🔊';
+      if (musicBtn) {
+        musicBtn.classList.remove('playing');
+        musicBtnText.textContent = 'включить музыку';
+        musicIcon.textContent = '🔊';
+      }
     });
+    
+    audio.addEventListener('error', (e) => {
+      console.error('Ошибка загрузки музыки:', e);
+      if (musicBtn) {
+        musicBtnText.textContent = 'файл не найден';
+        musicBtn.disabled = true;
+      }
+    });
+    
+    audio.load();
   }
 }
 
 function toggleMusic() {
-  initAudio();
-  
+  // Инициализируем аудио при первом клике
   if (!audio) {
-    console.warn('Музыка ещё не загружена');
-    return;
+    initAudio();
   }
   
-  if (isPlaying) {
-    audio.pause();
-  } else {
-    audio.play().catch(error => {
-      console.error('Ошибка воспроизведения:', error);
-      alert('Пожалуйста, нажмите кнопку ещё раз, чтобы включить музыку 🎵');
-    });
-  }
+  // Даём время на инициализацию
+  setTimeout(() => {
+    if (!audio) return;
+    
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      const playPromise = audio.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          console.log('Музыка играет');
+        }).catch(error => {
+          console.error('Ошибка воспроизведения:', error);
+          // Пробуем перезагрузить
+          audio.load();
+          setTimeout(() => {
+            audio.play().catch(e => {
+              console.error('Повторная ошибка:', e);
+            });
+          }, 100);
+        });
+      }
+    }
+  }, 50);
 }
 
+// Добавляем обработчик клика
 if (musicBtn) {
   musicBtn.addEventListener('click', toggleMusic);
 }
+
+// Предзагрузка аудио
+window.addEventListener('load', () => {
+  if (!audio) {
+    audio = new Audio(MUSIC_URL);
+    audio.loop = true;
+    audio.volume = 0.5;
+    audio.preload = 'auto';
+    audio.load();
+  }
+});
 </script>
 
 </body>
