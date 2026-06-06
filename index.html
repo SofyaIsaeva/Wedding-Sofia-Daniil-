@@ -914,7 +914,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 20px 30px 20px; /* увеличен отступ снизу до 30px */
+  padding: 20px 20px 30px 20px;
   position: relative;
   z-index: 2;
 }
@@ -1294,11 +1294,6 @@
 
 </div>
 
-<!-- ===== AUDIO PLAYER (скрытый) ===== -->
-<audio id="bg-music" loop preload="auto">
-  <source src="https://sofyaisaeva.github.io/wedding-music/music.mp3" type="audio/mpeg">
-</audio>
-
 <script>
 const HERO_PHOTO_URL = 'https://lh3.googleusercontent.com/d/1ljPD9Z7NfNNNdRzVxcfpTDzPdD2h8NMG=w1000?authuser=0';
 const WEDDING_DATE = new Date('2026-08-08T00:00:00');
@@ -1588,37 +1583,87 @@ if (!document.querySelector('#dynamic-form-styles')) {
   document.head.appendChild(style);
 }
 
-// ===== MUSIC PLAYER =====
-const bgMusic = document.getElementById('bg-music');
+// ===== MUSIC PLAYER (УЛУЧШЕННАЯ ВЕРСИЯ) =====
+const MUSIC_URL = 'https://sofyaisaeva.github.io/wedding-music/music.mp3';
 const musicBtn = document.getElementById('music-toggle-btn');
 const musicBtnText = document.getElementById('music-btn-text');
 const musicIcon = document.querySelector('#music-toggle-btn .music-icon-emoji');
-let isPlaying = false;
 
-// Устанавливаем громкость (0.5 = 50%, можно менять от 0 до 1)
-bgMusic.volume = 0.5;
+let bgMusic = null;
+let isPlaying = false;
+let isAudioReady = false;
+
+// Создаем Audio объект через JavaScript (более надежный способ)
+function initAudio() {
+  bgMusic = new Audio();
+  bgMusic.loop = true;
+  bgMusic.preload = 'auto';
+  bgMusic.volume = 0.5;
+  
+  // Обработчики событий
+  bgMusic.addEventListener('canplaythrough', () => {
+    console.log('✅ Аудио готово к воспроизведению');
+    isAudioReady = true;
+  });
+  
+  bgMusic.addEventListener('loadeddata', () => {
+    console.log('✅ Данные аудио загружены');
+  });
+  
+  bgMusic.addEventListener('error', (e) => {
+    console.error('❌ Ошибка загрузки аудио:', e);
+    console.log('Проверьте URL:', MUSIC_URL);
+  });
+  
+  bgMusic.addEventListener('play', () => {
+    console.log('▶️ Воспроизведение началось');
+  });
+  
+  bgMusic.addEventListener('pause', () => {
+    console.log('⏸️ Воспроизведение приостановлено');
+  });
+  
+  // Устанавливаем источник
+  bgMusic.src = MUSIC_URL;
+  
+  // Начинаем загрузку
+  bgMusic.load();
+  
+  console.log('🎵 Инициализация аудио:', MUSIC_URL);
+}
+
+// Инициализируем аудио при загрузке страницы
+initAudio();
 
 function toggleMusic() {
+  if (!bgMusic) {
+    console.error('Аудио не инициализировано');
+    return;
+  }
+  
   if (isPlaying) {
+    // Пауза
     bgMusic.pause();
     musicBtn.classList.remove('playing');
     musicBtnText.textContent = 'нажмите для включения';
     musicIcon.textContent = '🔊';
     isPlaying = false;
+    console.log('⏸️ Музыка остановлена');
   } else {
-    // Пробуем воспроизвести
+    // Воспроизведение
+    console.log('▶️ Попытка воспроизведения...');
     const playPromise = bgMusic.play();
+    
     if (playPromise !== undefined) {
       playPromise.then(() => {
-        // Успешно запустилось
+        console.log('✅ Музыка запущена успешно');
         musicBtn.classList.add('playing');
         musicBtnText.textContent = 'музыка играет';
         musicIcon.textContent = '🎵';
         isPlaying = true;
       }).catch(error => {
-        console.log('Ошибка воспроизведения:', error);
-        // Если браузер заблокировал автовоспроизведение
-        alert('Не удалось воспроизвести музыку. Попробуйте ещё раз.');
+        console.error('❌ Ошибка воспроизведения:', error);
+        alert('Не удалось воспроизвести музыку. Проверьте консоль браузера (F12) для деталей.');
       });
     }
   }
@@ -1626,13 +1671,8 @@ function toggleMusic() {
 
 if (musicBtn) {
   musicBtn.addEventListener('click', toggleMusic);
+  console.log('✅ Кнопка музыки инициализирована');
 }
-
-// Обработка ошибок загрузки аудио
-bgMusic.addEventListener('error', function(e) {
-  console.log('Ошибка загрузки аудио. Возможно, Google Drive блокирует прямое воспроизведение.');
-  console.log('Попробуйте использовать другой хостинг для аудиофайла.');
-});
 </script>
 
 </body>
