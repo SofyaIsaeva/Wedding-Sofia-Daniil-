@@ -1641,142 +1641,70 @@ let isPlaying = false;
 const musicBtn = document.getElementById('music-toggle-btn');
 const musicBtnText = document.getElementById('music-btn-text');
 const musicIcon = document.querySelector('#music-toggle-btn .music-icon-emoji');
-
-// Ссылка на музыку (относительный путь для GitHub Pages)
+  
 const MUSIC_URL = 'https://files.catbox.moe/8glj4j.mp3';
 
-// Функция для создания аудио с правильной настройкой
-function setupAudio() {
-  if (audio) return audio;
-  
-  audio = new Audio();
-  audio.src = MUSIC_URL;
-  audio.loop = true;
-  audio.volume = 0.5;
-  audio.preload = 'auto';
-  
-  // Загружаем аудио сразу
-  audio.load();
-  
-  audio.addEventListener('canplaythrough', () => {
-    console.log('Музыка успешно загружена');
-    if (musicBtn) {
-      musicBtn.disabled = false;
-    }
-  });
-  
-  audio.addEventListener('error', (e) => {
-    console.error('Ошибка загрузки музыки:', e);
-    if (musicBtnText) {
-      musicBtnText.textContent = 'ошибка загрузки';
-    }
-  });
-  
-  audio.addEventListener('play', () => {
-    isPlaying = true;
-    if (musicBtn) musicBtn.classList.add('playing');
-    if (musicBtnText) musicBtnText.textContent = 'музыка играет';
-    if (musicIcon) musicIcon.textContent = '🎵';
-  });
-  
-  audio.addEventListener('pause', () => {
-    isPlaying = false;
-    if (musicBtn) musicBtn.classList.remove('playing');
-    if (musicBtnText) musicBtnText.textContent = 'нажмите для включения';
-    if (musicIcon) musicIcon.textContent = '🔊';
-  });
-  
-  return audio;
+function initAudio() {
+  if (!audio && MUSIC_URL) {
+    audio = new Audio();
+    audio.loop = true;
+    audio.volume = 0.5;
+    
+    // Загружаем файл через fetch для обхода CORS
+    fetch(MUSIC_URL)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        audio.src = url;
+        audio.load();
+        
+        audio.addEventListener('canplaythrough', () => {
+          console.log('Музыка загружена');
+        });
+      })
+      .catch(error => {
+        console.error('Ошибка загрузки музыки:', error);
+        musicBtnText.textContent = 'ошибка загрузки';
+        musicBtn.disabled = true;
+      });
+    
+    // Обработчики событий
+    audio.addEventListener('play', () => {
+      isPlaying = true;
+      musicBtn.classList.add('playing');
+      musicBtnText.textContent = 'музыка играет';
+      musicIcon.textContent = '🎵';
+    });
+    
+    audio.addEventListener('pause', () => {
+      isPlaying = false;
+      musicBtn.classList.remove('playing');
+      musicBtnText.textContent = 'нажмите для включения';
+      musicIcon.textContent = '🔊';
+    });
+  }
 }
 
-// Функция для включения/выключения музыки
 function toggleMusic() {
-  const audioPlayer = setupAudio();
+  initAudio();
   
-  if (!audioPlayer) {
-    console.error('Не удалось создать аудио-плеер');
+  if (!audio) {
+    console.warn('Музыка ещё не загружена');
     return;
   }
   
   if (isPlaying) {
-    audioPlayer.pause();
+    audio.pause();
   } else {
-    // Важно: создаём Promise для воспроизведения
-    const playPromise = audioPlayer.play();
-    
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        // Воспроизведение началось успешно
-        console.log('Музыка играет');
-      }).catch(error => {
-        console.error('Ошибка воспроизведения:', error);
-        // Если ошибка, пробуем снова с задержкой
-        setTimeout(() => {
-          audioPlayer.play().catch(e => {
-            console.error('Повторная попытка не удалась:', e);
-            alert('Нажмите кнопку ещё раз, чтобы включить музыку 🎵');
-          });
-        }, 100);
-      });
-    }
-  }
-}
-
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', () => {
-  if (musicBtn) {
-    musicBtn.disabled = true; // Сначала кнопка неактивна, пока грузится музыка
-    musicBtn.addEventListener('click', toggleMusic);
-    setupAudio(); // Предзагружаем музыку
-  }
-});
-// Альтернативный способ для GitHub Pages
-// Создаём скрытый аудиоэлемент в HTML
-function createHiddenAudio() {
-  const existingAudio = document.getElementById('bg-music');
-  if (existingAudio) return existingAudio;
-  
-  const hiddenAudio = document.createElement('audio');
-  hiddenAudio.id = 'bg-music';
-  hiddenAudio.loop = true;
-  hiddenAudio.volume = 0.5;
-  hiddenAudio.preload = 'auto';
-  hiddenAudio.src = '/music/Indila_-_Love_Story_48105410.mp3';
-  document.body.appendChild(hiddenAudio);
-  
-  hiddenAudio.addEventListener('canplaythrough', () => {
-    console.log('Аудио готово к воспроизведению');
-    if (musicBtn) musicBtn.disabled = false;
-  });
-  
-  return hiddenAudio;
-}
-
-// Заменяем функцию toggleMusic на эту версию
-window.toggleMusicAlt = function() {
-  const hiddenAudio = document.getElementById('bg-music') || createHiddenAudio();
-  
-  if (hiddenAudio.paused) {
-    hiddenAudio.play().then(() => {
-      if (musicBtn) musicBtn.classList.add('playing');
-      if (musicBtnText) musicBtnText.textContent = 'музыка играет';
-      if (musicIcon) musicIcon.textContent = '🎵';
-    }).catch(e => {
-      console.error('Ошибка:', e);
-      alert('Пожалуйста, нажмите кнопку ещё раз 🎵');
+    audio.play().catch(error => {
+      console.error('Ошибка воспроизведения:', error);
+      alert('Пожалуйста, нажмите кнопку ещё раз, чтобы включить музыку 🎵');
     });
-  } else {
-    hiddenAudio.pause();
-    if (musicBtn) musicBtn.classList.remove('playing');
-    if (musicBtnText) musicBtnText.textContent = 'нажмите для включения';
-    if (musicIcon) musicIcon.textContent = '🔊';
   }
-};
+}
 
-// Переназначаем обработчик на альтернативную функцию
 if (musicBtn) {
-  musicBtn.removeEventListener('click', toggleMusic);
-  musicBtn.addEventListener('click', window.toggleMusicAlt);
+  musicBtn.addEventListener('click', toggleMusic);
 }
 </script>
 
