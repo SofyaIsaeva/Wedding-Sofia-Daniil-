@@ -1635,125 +1635,134 @@ if (!document.querySelector('#dynamic-form-styles')) {
   `;
   document.head.appendChild(style);
 }
-// ===== MUSIC PLAYER =====
+// ===== MUSIC PLAYER (VK VIDEO) =====
 let isPlaying = false;
-let youtubeIframe = null;
+let vkIframe = null;
 let playerReady = false;
+let playAttempts = 0;
 const musicBtn = document.getElementById('music-toggle-btn');
 const musicBtnText = document.getElementById('music-btn-text');
 const musicIcon = document.querySelector('#music-toggle-btn .music-icon-emoji');
 
-// ID видео на YouTube (Indila - Love Story)
-// Можно заменить на любой другой YouTube видео ID
-const YOUTUBE_VIDEO_ID = 'YHvBbfM0bUQ'; // Indila - Love Story
+// Ваш код встраивания из VK Видео
+const VK_VIDEO_SRC = 'https://vk.com/video_ext.php?oid=-229974233&id=456239049&hd=2&autoplay=0&loop=1';
 
-// Создаём скрытый YouTube плеер
-function createYouTubePlayer() {
-  // Добавляем YouTube API
-  if (!document.querySelector('#youtube-api')) {
-    const tag = document.createElement('script');
-    tag.id = 'youtube-api';
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-  }
-  
-  // Создаём контейнер для плеера (скрытый)
-  let playerContainer = document.getElementById('youtube-player-container');
-  if (!playerContainer) {
+// Создаём контейнер для плеера (скрытый)
+let playerContainer = document.getElementById('vk-player-container');
+if (!playerContainer) {
     playerContainer = document.createElement('div');
-    playerContainer.id = 'youtube-player-container';
-    playerContainer.style.display = 'none';
+    playerContainer.id = 'vk-player-container';
+    playerContainer.style.cssText = 'position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; z-index: -1;';
     document.body.appendChild(playerContainer);
-  }
-  
-  // Функция будет вызвана API YouTube
-  window.onYouTubeIframeAPIReady = function() {
-    youtubeIframe = new YT.Player('youtube-player-container', {
-      height: '0',
-      width: '0',
-      videoId: YOUTUBE_VIDEO_ID,
-      playerVars: {
-        'loop': 1,
-        'autoplay': 0,
-        'controls': 0,
-        'disablekb': 1,
-        'fs': 0,
-        'iv_load_policy': 3,
-        'modestbranding': 1,
-        'rel': 0,
-        'showinfo': 0,
-        'playsinline': 1
-      },
-      events: {
-        'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange,
-        'onError': onPlayerError
-      }
-    });
-  };
 }
 
-function onPlayerReady(event) {
-  playerReady = true;
-  console.log('YouTube плеер готов');
-  if (musicBtn) musicBtn.disabled = false;
+// Функция создания плеера
+function createVKPlayer() {
+    if (vkIframe) return;
+    
+    // Создаём iframe
+    vkIframe = document.createElement('iframe');
+    vkIframe.src = VK_VIDEO_SRC;
+    vkIframe.width = '1';
+    vkIframe.height = '1';
+    vkIframe.style.border = 'none';
+    vkIframe.style.position = 'fixed';
+    vkIframe.style.top = '-9999px';
+    vkIframe.style.left = '-9999px';
+    vkIframe.allow = 'autoplay; encrypted-media; fullscreen';
+    vkIframe.setAttribute('allowfullscreen', '');
+    
+    vkIframe.onload = () => {
+        console.log('VK плеер загружен');
+        playerReady = true;
+        if (musicBtn) musicBtn.disabled = false;
+    };
+    
+    playerContainer.appendChild(vkIframe);
 }
 
-function onPlayerStateChange(event) {
-  // Состояния плеера: -1 (не начато), 0 (закончено), 1 (играет), 2 (пауза), 3 (буферизация), 5 (видео загружено)
-  if (event.data === YT.PlayerState.PLAYING) {
-    isPlaying = true;
-    if (musicBtn) {
-      musicBtn.classList.add('playing');
-      musicBtnText.textContent = 'музыка играет';
-      musicIcon.textContent = '🎵';
+// Функция для попытки воспроизведения через клик по iframe
+function tryPlayViaClick() {
+    if (!vkIframe || !playerReady) return;
+    
+    try {
+        // Пытаемся найти кнопку play внутри iframe (упрощённый способ)
+        const playMessage = JSON.stringify({ method: 'play', video_id: '456239049' });
+        vkIframe.contentWindow.postMessage(playMessage, '*');
+        
+        isPlaying = true;
+        if (musicBtn) {
+            musicBtn.classList.add('playing');
+            musicBtnText.textContent = 'музыка играет';
+            musicIcon.textContent = '🎵';
+        }
+        console.log('Попытка воспроизведения отправлена');
+    } catch(e) {
+        console.log('Ожидание готовности плеера...');
+        // Повторная попытка через 1 секунду
+        setTimeout(() => {
+            if (!isPlaying) {
+                tryPlayViaClick();
+            }
+        }, 1000);
     }
-  } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-    isPlaying = false;
-    if (musicBtn) {
-      musicBtn.classList.remove('playing');
-      musicBtnText.textContent = 'включить музыку';
-      musicIcon.textContent = '🔊';
+}
+
+// Функция для паузы
+function tryPauseViaClick() {
+    if (!vkIframe || !playerReady) return;
+    
+    try {
+        const pauseMessage = JSON.stringify({ method: 'pause' });
+        vkIframe.contentWindow.postMessage(pauseMessage, '*');
+        
+        isPlaying = false;
+        if (musicBtn) {
+            musicBtn.classList.remove('playing');
+            musicBtnText.textContent = 'включить музыку';
+            musicIcon.textContent = '🔊';
+        }
+    } catch(e) {
+        console.log('Ошибка паузы:', e);
     }
-  }
 }
 
-function onPlayerError(event) {
-  console.error('YouTube ошибка:', event.data);
-  if (musicBtn) {
-    musicBtnText.textContent = 'ошибка';
-    musicBtn.disabled = true;
-  }
-}
-
+// Основная функция включения/выключения
 function toggleMusic() {
-  if (!playerReady && !youtubeIframe) {
-    // Первый запуск — создаём плеер
-    createYouTubePlayer();
-    // Ждём готовности
-    const checkReady = setInterval(() => {
-      if (playerReady && youtubeIframe) {
-        clearInterval(checkReady);
-        youtubeIframe.playVideo();
-      }
-    }, 500);
-    return;
-  }
-  
-  if (youtubeIframe && playerReady) {
-    if (isPlaying) {
-      youtubeIframe.pauseVideo();
-    } else {
-      youtubeIframe.playVideo();
+    if (!playerReady && !vkIframe) {
+        createVKPlayer();
+        // Ждём загрузки плеера
+        const checkReady = setInterval(() => {
+            if (playerReady && vkIframe) {
+                clearInterval(checkReady);
+                tryPlayViaClick();
+            }
+        }, 500);
+        return;
     }
-  }
+    
+    if (isPlaying) {
+        tryPauseViaClick();
+    } else {
+        tryPlayViaClick();
+    }
 }
 
 // Добавляем обработчик клика
 if (musicBtn) {
-  musicBtn.addEventListener('click', toggleMusic);
+    musicBtn.addEventListener('click', toggleMusic);
+    // Изначально кнопка активна
+    musicBtn.disabled = false;
 }
+
+// Предзагрузка плеера при загрузке страницы
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        if (!vkIframe) {
+            createVKPlayer();
+        }
+    }, 1000);
+});
 </script>
 
 </body>
