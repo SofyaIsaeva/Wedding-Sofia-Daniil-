@@ -217,14 +217,13 @@
   }
 
   /* ===== НОВЫЙ УНИВЕРСАЛЬНЫЙ РАЗДЕЛИТЕЛЬ ===== */
-  /* Картинка растягивается на всю ширину, но визуально занимает 1 см по высоте */
   .lace-divider-image {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 1cm;           /* Фиксированная высота — 1 сантиметр */
-    overflow: hidden;      /* Скрываем лишнее, если картинка вдруг выше */
+    height: 1cm;
+    overflow: hidden;
     margin: 0;
     padding: 0;
     background: transparent;
@@ -232,16 +231,15 @@
 
   .lace-divider-image img {
     display: block;
-    width: 100%;           /* Растягиваем по ширине родителя (всему экрану) */
-    height: 100%;          /* Заполняем контейнер высотой 1см */
-    object-fit: cover;     /* Картинка покрывает всю область, сохраняя пропорции */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     object-position: center center;
-    opacity: 0.75;         /* Оставляем лёгкую полупрозрачность как было */
+    opacity: 0.75;
     margin: 0;
     padding: 0;
   }
 
-  /* Старый декоративный линейный разделитель (с иконкой) оставляем без изменений */
   .lace-divider-line {
     display: flex;
     align-items: center;
@@ -346,6 +344,86 @@
     color: var(--text-soft);
     max-width: 540px;
     margin: 0 auto;
+  }
+
+  /* ===== MUSIC BUTTON ===== */
+  .music-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 20px 40px 20px; /* Увеличен нижний отступ с 10px до 40px */
+    position: relative;
+    z-index: 2;
+  }
+
+  .music-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 32px;
+    background: var(--gold);
+    color: #FFF;
+    border: none;
+    border-radius: 40px;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  .music-btn:hover {
+    background: var(--gold-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(184,153,106,0.4);
+  }
+
+  .music-btn:active {
+    transform: translateY(0);
+  }
+
+  .music-btn.playing {
+    background: var(--gold-dark);
+    animation: pulse-gentle 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-gentle {
+    0%, 100% {
+      box-shadow: 0 4px 15px rgba(184,153,106,0.3);
+    }
+    50% {
+      box-shadow: 0 6px 25px rgba(184,153,106,0.6);
+    }
+  }
+
+  .music-icon {
+    font-size: 20px;
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .music-btn.playing .music-icon {
+    animation: musicWave 1s ease-in-out infinite;
+  }
+
+  @keyframes musicWave {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.15);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .music-btn {
+      padding: 10px 24px;
+      font-size: 16px;
+      gap: 8px;
+    }
   }
 
   /* ===== CALENDAR ===== */
@@ -910,111 +988,6 @@
     opacity: 1;
   }
 }
-/* ===== MUSIC BUTTON ===== */
-.music-button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px 20px 10px 20px;
-  position: relative;
-  z-index: 2;
-}
-
-.music-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 14px 32px;
-  background: var(--gold);
-  color: #FFF;
-  border: none;
-  border-radius: 40px;
-  font-family: 'Playfair Display', serif;
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 2px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  backdrop-filter: blur(5px);
-}
-
-.music-btn:hover {
-  background: var(--gold-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(184,153,106,0.4);
-}
-
-.music-btn:active {
-  transform: translateY(0);
-}
-
-.music-btn.playing {
-  background: var(--gold-dark);
-  animation: pulse-gentle 2s ease-in-out infinite;
-}
-
-@keyframes pulse-gentle {
-  0%, 100% {
-    box-shadow: 0 4px 15px rgba(184,153,106,0.3);
-  }
-  50% {
-    box-shadow: 0 6px 25px rgba(184,153,106,0.6);
-  }
-}
-
-.music-icon {
-  font-size: 20px;
-  display: inline-block;
-  transition: transform 0.2s ease;
-}
-
-.music-btn.playing .music-icon {
-  animation: musicWave 1s ease-in-out infinite;
-}
-
-@keyframes musicWave {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.15);
-  }
-}
-
-/* Иконка динамика (простая CSS) */
-.speaker-icon {
-  position: relative;
-  width: 20px;
-  height: 18px;
-  display: inline-block;
-}
-
-.speaker-icon::before {
-  content: '🔊';
-  font-size: 20px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Альтернативная иконка через эмодзи */
-.music-icon-emoji {
-  font-size: 22px;
-}
-
-@media (max-width: 600px) {
-  .music-btn {
-    padding: 10px 24px;
-    font-size: 16px;
-    gap: 8px;
-  }
-  .music-icon-emoji {
-    font-size: 18px;
-  }
-}
 </style>
 </head>
 <body>
@@ -1026,6 +999,11 @@
     <div class="envelope-hint">нажмите, чтобы открыть</div>
   </div>
 </div>
+
+<!-- Скрытый аудио-плеер -->
+<audio id="bg-music" loop preload="auto">
+  <source src="https://drive.google.com/uc?export=download&id=1Rr4suqW3eBEkNkElsYyWvBiqM0dbYiNh" type="audio/mpeg">
+</audio>
 
 <!-- ===== MAIN CONTENT ===== -->
 <div id="main-content">
@@ -1054,13 +1032,14 @@
 
   <!-- WELCOME -->
   <section class="section section-ivory">
-     <!-- MUSIC BUTTON -->
-  <div class="music-button-container anim-element anim-fade-up delay-3">
-    <button id="music-toggle-btn" class="music-btn">
-      <span class="music-icon-emoji">🔊</span>
-      <span id="music-btn-text">нажмите для включения</span>
-    </button>
-  </div>
+    <!-- КНОПКА МУЗЫКИ -->
+    <div class="music-button-container anim-element anim-fade-up delay-3">
+      <button id="music-toggle-btn" class="music-btn" onclick="toggleMusic()">
+        <span class="music-icon">🔊</span>
+        <span id="music-btn-text">включить музыку</span>
+      </button>
+    </div>
+    
     <div class="section-inner">
       <h2 class="section-title anim-element anim-fade-up">Дорогие гости!</h2>
       <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament">♥</span></div>
@@ -1389,6 +1368,34 @@ function pluralizeSeconds(n) {
 
 document.getElementById('hero-photo').src = HERO_PHOTO_URL;
 
+// ===== MUSIC PLAYER =====
+const bgMusic = document.getElementById('bg-music');
+const musicBtn = document.getElementById('music-toggle-btn');
+const musicBtnText = document.getElementById('music-btn-text');
+const musicIcon = musicBtn.querySelector('.music-icon');
+
+bgMusic.volume = 0.5; // Громкость 50%
+
+function toggleMusic() {
+  if (bgMusic.paused) {
+    const playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        musicBtn.classList.add('playing');
+        musicBtnText.textContent = 'выключить музыку';
+        musicIcon.textContent = '🎵';
+      }).catch(err => {
+        console.log('Браузер заблокировал воспроизведение:', err);
+      });
+    }
+  } else {
+    bgMusic.pause();
+    musicBtn.classList.remove('playing');
+    musicBtnText.textContent = 'включить музыку';
+    musicIcon.textContent = '🔊';
+  }
+}
+
 function openEnvelope() {
   const envelope = document.getElementById('envelope');
   envelope.classList.add('open');
@@ -1396,7 +1403,21 @@ function openEnvelope() {
     document.getElementById('envelope-screen').classList.add('hidden');
     document.getElementById('main-content').classList.add('visible');
     document.body.style.overflow = 'auto';
-    // Trigger hero animations after content is visible
+    
+    // Автозапуск музыки при открытии конверта
+    setTimeout(() => {
+      if (bgMusic.paused) {
+        bgMusic.play().then(() => {
+          musicBtn.classList.add('playing');
+          musicBtnText.textContent = 'выключить музыку';
+          musicIcon.textContent = '🎵';
+        }).catch(() => {
+          // Если заблокировали — ничего, гость нажмёт кнопку сам
+        });
+      }
+    }, 300);
+    
+    // Анимация элементов hero
     setTimeout(() => {
       document.querySelectorAll('.hero-section .anim-element, .hero-section ~ .anim-element').forEach(el => {
         el.classList.add('visible');
@@ -1498,7 +1519,6 @@ renderCircles('gentlemen-colors', GENTLEMEN_COLORS);
 updateTimer();
 setInterval(updateTimer, 1000);
 
-// Smooth scroll animations with IntersectionObserver
 const animObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -1522,7 +1542,6 @@ function toggleChildrenField(show) {
   document.getElementById('children-field').classList.toggle('show', show);
 }
 
-// Функция для форматирования телефона
 function formatPhoneNumber(e) {
   let val = e.target.value.replace(/\D/g, '');
   if (val.startsWith('8')) val = '7' + val.slice(1);
@@ -1536,27 +1555,22 @@ function formatPhoneNumber(e) {
   }
 }
 
-// Добавляем форматирование телефона
 document.querySelector('input[name="phone"]').addEventListener('input', formatPhoneNumber);
 
-// Обработчик отправки формы с анимацией
 document.getElementById('rsvp-form').addEventListener('submit', async function(e) {
   e.preventDefault();
   
-  // Получаем кнопку и элементы формы
   const submitBtn = document.getElementById('submit-btn');
   const btnText = submitBtn.querySelector('.btn-text');
   const btnLoader = submitBtn.querySelector('.btn-loader');
   const formContainer = document.querySelector('.form-container');
   
-  // Блокируем кнопку и показываем анимацию загрузки
   submitBtn.disabled = true;
   btnText.style.display = 'none';
   btnLoader.style.display = 'inline-flex';
   submitBtn.classList.add('loading');
   formContainer.classList.add('sending');
   
-  // Собираем данные формы
   const formData = new FormData(this);
   const data = {};
   formData.forEach((value, key) => {
@@ -1570,7 +1584,6 @@ document.getElementById('rsvp-form').addEventListener('submit', async function(e
   if (data.drinks) data.drinks = data.drinks.join(', ');
   
   try {
-    // Отправляем данные
     if (FORM_SUBMIT_URL) {
       const response = await fetch(FORM_SUBMIT_URL, { 
         method: 'POST', 
@@ -1579,7 +1592,6 @@ document.getElementById('rsvp-form').addEventListener('submit', async function(e
         body: JSON.stringify(data) 
       });
       
-      // Небольшая задержка для имитации обработки
       await new Promise(resolve => setTimeout(resolve, 800));
       
       showSuccess();
@@ -1590,7 +1602,6 @@ document.getElementById('rsvp-form').addEventListener('submit', async function(e
     }
   } catch (error) {
     console.error('Ошибка отправки:', error);
-    // Восстанавливаем кнопку при ошибке
     btnText.style.display = 'inline';
     btnLoader.style.display = 'none';
     submitBtn.disabled = false;
@@ -1606,18 +1617,14 @@ function showSuccess() {
   const successDiv = document.getElementById('form-success');
   const formContainer = document.querySelector('.form-container');
   
-  // Убираем анимацию загрузки
   formContainer.classList.remove('sending');
   
-  // Показываем сообщение об успехе
   form.style.display = 'none';
   successDiv.classList.add('show');
   
-  // Добавляем анимацию появления
   successDiv.style.animation = 'fadeInUp 0.6s ease';
 }
 
-// Добавляем CSS для анимации появления сообщения об успехе (если ещё нет)
 if (!document.querySelector('#dynamic-form-styles')) {
   const style = document.createElement('style');
   style.id = 'dynamic-form-styles';
@@ -1635,134 +1642,6 @@ if (!document.querySelector('#dynamic-form-styles')) {
   `;
   document.head.appendChild(style);
 }
-// ===== MUSIC PLAYER (VK VIDEO) =====
-let isPlaying = false;
-let vkIframe = null;
-let playerReady = false;
-let playAttempts = 0;
-const musicBtn = document.getElementById('music-toggle-btn');
-const musicBtnText = document.getElementById('music-btn-text');
-const musicIcon = document.querySelector('#music-toggle-btn .music-icon-emoji');
-
-// Ваш код встраивания из VK Видео
-const VK_VIDEO_SRC = 'https://vk.com/video_ext.php?oid=-229974233&id=456239049&hd=2&autoplay=0&loop=1';
-
-// Создаём контейнер для плеера (скрытый)
-let playerContainer = document.getElementById('vk-player-container');
-if (!playerContainer) {
-    playerContainer = document.createElement('div');
-    playerContainer.id = 'vk-player-container';
-    playerContainer.style.cssText = 'position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; z-index: -1;';
-    document.body.appendChild(playerContainer);
-}
-
-// Функция создания плеера
-function createVKPlayer() {
-    if (vkIframe) return;
-    
-    // Создаём iframe
-    vkIframe = document.createElement('iframe');
-    vkIframe.src = VK_VIDEO_SRC;
-    vkIframe.width = '1';
-    vkIframe.height = '1';
-    vkIframe.style.border = 'none';
-    vkIframe.style.position = 'fixed';
-    vkIframe.style.top = '-9999px';
-    vkIframe.style.left = '-9999px';
-    vkIframe.allow = 'autoplay; encrypted-media; fullscreen';
-    vkIframe.setAttribute('allowfullscreen', '');
-    
-    vkIframe.onload = () => {
-        console.log('VK плеер загружен');
-        playerReady = true;
-        if (musicBtn) musicBtn.disabled = false;
-    };
-    
-    playerContainer.appendChild(vkIframe);
-}
-
-// Функция для попытки воспроизведения через клик по iframe
-function tryPlayViaClick() {
-    if (!vkIframe || !playerReady) return;
-    
-    try {
-        // Пытаемся найти кнопку play внутри iframe (упрощённый способ)
-        const playMessage = JSON.stringify({ method: 'play', video_id: '456239049' });
-        vkIframe.contentWindow.postMessage(playMessage, '*');
-        
-        isPlaying = true;
-        if (musicBtn) {
-            musicBtn.classList.add('playing');
-            musicBtnText.textContent = 'музыка играет';
-            musicIcon.textContent = '🎵';
-        }
-        console.log('Попытка воспроизведения отправлена');
-    } catch(e) {
-        console.log('Ожидание готовности плеера...');
-        // Повторная попытка через 1 секунду
-        setTimeout(() => {
-            if (!isPlaying) {
-                tryPlayViaClick();
-            }
-        }, 1000);
-    }
-}
-
-// Функция для паузы
-function tryPauseViaClick() {
-    if (!vkIframe || !playerReady) return;
-    
-    try {
-        const pauseMessage = JSON.stringify({ method: 'pause' });
-        vkIframe.contentWindow.postMessage(pauseMessage, '*');
-        
-        isPlaying = false;
-        if (musicBtn) {
-            musicBtn.classList.remove('playing');
-            musicBtnText.textContent = 'включить музыку';
-            musicIcon.textContent = '🔊';
-        }
-    } catch(e) {
-        console.log('Ошибка паузы:', e);
-    }
-}
-
-// Основная функция включения/выключения
-function toggleMusic() {
-    if (!playerReady && !vkIframe) {
-        createVKPlayer();
-        // Ждём загрузки плеера
-        const checkReady = setInterval(() => {
-            if (playerReady && vkIframe) {
-                clearInterval(checkReady);
-                tryPlayViaClick();
-            }
-        }, 500);
-        return;
-    }
-    
-    if (isPlaying) {
-        tryPauseViaClick();
-    } else {
-        tryPlayViaClick();
-    }
-}
-
-// Добавляем обработчик клика
-if (musicBtn) {
-    musicBtn.addEventListener('click', toggleMusic);
-    // Изначально кнопка активна
-    musicBtn.disabled = false;
-}
-
-// Предзагрузка плеера при загрузке страницы
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        if (!vkIframe) {
-            createVKPlayer();
-        }
-    }, 1000);
-});
 </script>
 
 </body>
