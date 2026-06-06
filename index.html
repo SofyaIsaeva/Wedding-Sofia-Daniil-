@@ -1642,72 +1642,94 @@ const musicBtn = document.getElementById('music-toggle-btn');
 const musicBtnText = document.getElementById('music-btn-text');
 const musicIcon = document.querySelector('#music-toggle-btn .music-icon-emoji');
 
-// Ссылка на музыку через GitHub Pages (если сайт на GitHub Pages)
-// ВАЖНО: сайт должен быть опубликован на GitHub Pages
+// Ссылка на музыку (относительный путь для GitHub Pages)
 const MUSIC_URL = '/music/Indila_-_Love_Story_48105410.mp3';
 
-function initAudio() {
-  if (!audio && MUSIC_URL) {
-    audio = new Audio();
-    audio.loop = true;
-    audio.volume = 0.5;
-    
-    // Загружаем файл через fetch для обхода CORS
-    fetch(MUSIC_URL)
-      .then(response => response.blob())
-      .then(blob => {
-        const url = URL.createObjectURL(blob);
-        audio.src = url;
-        audio.load();
-        
-        audio.addEventListener('canplaythrough', () => {
-          console.log('Музыка загружена');
-        });
-      })
-      .catch(error => {
-        console.error('Ошибка загрузки музыки:', error);
-        musicBtnText.textContent = 'ошибка загрузки';
-        musicBtn.disabled = true;
-      });
-    
-    // Обработчики событий
-    audio.addEventListener('play', () => {
-      isPlaying = true;
-      musicBtn.classList.add('playing');
-      musicBtnText.textContent = 'музыка играет';
-      musicIcon.textContent = '🎵';
-    });
-    
-    audio.addEventListener('pause', () => {
-      isPlaying = false;
-      musicBtn.classList.remove('playing');
-      musicBtnText.textContent = 'нажмите для включения';
-      musicIcon.textContent = '🔊';
-    });
-  }
+// Функция для создания аудио с правильной настройкой
+function setupAudio() {
+  if (audio) return audio;
+  
+  audio = new Audio();
+  audio.src = MUSIC_URL;
+  audio.loop = true;
+  audio.volume = 0.5;
+  audio.preload = 'auto';
+  
+  // Загружаем аудио сразу
+  audio.load();
+  
+  audio.addEventListener('canplaythrough', () => {
+    console.log('Музыка успешно загружена');
+    if (musicBtn) {
+      musicBtn.disabled = false;
+    }
+  });
+  
+  audio.addEventListener('error', (e) => {
+    console.error('Ошибка загрузки музыки:', e);
+    if (musicBtnText) {
+      musicBtnText.textContent = 'ошибка загрузки';
+    }
+  });
+  
+  audio.addEventListener('play', () => {
+    isPlaying = true;
+    if (musicBtn) musicBtn.classList.add('playing');
+    if (musicBtnText) musicBtnText.textContent = 'музыка играет';
+    if (musicIcon) musicIcon.textContent = '🎵';
+  });
+  
+  audio.addEventListener('pause', () => {
+    isPlaying = false;
+    if (musicBtn) musicBtn.classList.remove('playing');
+    if (musicBtnText) musicBtnText.textContent = 'нажмите для включения';
+    if (musicIcon) musicIcon.textContent = '🔊';
+  });
+  
+  return audio;
 }
 
+// Функция для включения/выключения музыки
 function toggleMusic() {
-  initAudio();
+  const audioPlayer = setupAudio();
   
-  if (!audio) {
-    console.warn('Музыка ещё не загружена');
+  if (!audioPlayer) {
+    console.error('Не удалось создать аудио-плеер');
     return;
   }
   
   if (isPlaying) {
-    audio.pause();
+    audioPlayer.pause();
   } else {
-    audio.play().catch(error => {
-      console.error('Ошибка воспроизведения:', error);
-      alert('Пожалуйста, нажмите кнопку ещё раз, чтобы включить музыку 🎵');
-    });
+    // Важно: создаём Promise для воспроизведения
+    const playPromise = audioPlayer.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        // Воспроизведение началось успешно
+        console.log('Музыка играет');
+      }).catch(error => {
+        console.error('Ошибка воспроизведения:', error);
+        // Если ошибка, пробуем снова с задержкой
+        setTimeout(() => {
+          audioPlayer.play().catch(e => {
+            console.error('Повторная попытка не удалась:', e);
+            alert('Нажмите кнопку ещё раз, чтобы включить музыку 🎵');
+          });
+        }, 100);
+      });
+    }
   }
 }
 
-if (musicBtn) {
-  musicBtn.addEventListener('click', toggleMusic);
-}
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+  if (musicBtn) {
+    musicBtn.disabled = true; // Сначала кнопка неактивна, пока грузится музыка
+    musicBtn.addEventListener('click', toggleMusic);
+    setupAudio(); // Предзагружаем музыку
+  }
+});
 </script>
 
 </body>
