@@ -911,105 +911,108 @@
   }
 }
 /* ===== MUSIC BUTTON ===== */
-.music-section {
-  position: relative;
-  background: var(--ivory-light);
-  padding: 30px 20px;
+.music-button-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px 20px 10px 20px;
+  position: relative;
+  z-index: 2;
 }
 
-.music-button {
-  position: relative;
+.music-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   padding: 14px 32px;
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  background: var(--gold);
+  color: #FFF;
   border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  font-family: 'Cormorant Garamond', serif;
+  border-radius: 40px;
+  font-family: 'Playfair Display', serif;
   font-size: 18px;
   font-weight: 500;
   letter-spacing: 2px;
-  color: #FFF;
-  text-transform: uppercase;
+  cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(184,153,106,0.3);
-  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  backdrop-filter: blur(5px);
 }
 
-.music-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: left 0.5s ease;
-}
-
-.music-button:hover::before {
-  left: 100%;
-}
-
-.music-button:hover {
+.music-btn:hover {
+  background: var(--gold-dark);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(184,153,106,0.4);
 }
 
-.music-button:active {
+.music-btn:active {
   transform: translateY(0);
 }
 
-.music-icon {
-  font-size: 24px;
-  transition: transform 0.3s ease;
+.music-btn.playing {
+  background: var(--gold-dark);
+  animation: pulse-gentle 2s ease-in-out infinite;
 }
 
-.music-button.playing .music-icon {
-  animation: musicPulse 1s ease-in-out infinite;
-}
-
-@keyframes musicPulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
-.music-text {
-  font-size: 16px;
-}
-
-.music-button.playing .music-text::before {
-  content: '♫ ';
-  animation: fadeInOut 1s ease-in-out infinite;
-}
-
-@keyframes fadeInOut {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-
-/* Анимация для волн при проигрывании */
-.music-button.playing {
-  background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
-  animation: buttonGlow 1.5s ease-in-out infinite;
-}
-
-@keyframes buttonGlow {
+@keyframes pulse-gentle {
   0%, 100% {
     box-shadow: 0 4px 15px rgba(184,153,106,0.3);
   }
   50% {
-    box-shadow: 0 4px 25px rgba(184,153,106,0.6);
+    box-shadow: 0 6px 25px rgba(184,153,106,0.6);
+  }
+}
+
+.music-icon {
+  font-size: 20px;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.music-btn.playing .music-icon {
+  animation: musicWave 1s ease-in-out infinite;
+}
+
+@keyframes musicWave {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+/* Иконка динамика (простая CSS) */
+.speaker-icon {
+  position: relative;
+  width: 20px;
+  height: 18px;
+  display: inline-block;
+}
+
+.speaker-icon::before {
+  content: '🔊';
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Альтернативная иконка через эмодзи */
+.music-icon-emoji {
+  font-size: 22px;
+}
+
+@media (max-width: 600px) {
+  .music-btn {
+    padding: 10px 24px;
+    font-size: 16px;
+    gap: 8px;
+  }
+  .music-icon-emoji {
+    font-size: 18px;
   }
 }
 </style>
@@ -1049,13 +1052,13 @@
     <img src="https://drive.google.com/thumbnail?id=1HL4E0CH34AE2id9pBJiBd0ucxWyENL4v&sz=w1000" alt="Кружево">
   </div>
 
-  <!-- MUSIC SECTION -->
-<section class="music-section">
-  <button id="music-button" class="music-button" onclick="toggleMusic()">
-    <span class="music-icon">🎵</span>
-    <span class="music-text" id="music-text">Включить музыку</span>
-  </button>
-</section>
+   <!-- MUSIC BUTTON -->
+  <div class="music-button-container anim-element anim-fade-up delay-3">
+    <button id="music-toggle-btn" class="music-btn">
+      <span class="music-icon-emoji">🔊</span>
+      <span id="music-btn-text">нажмите для включения</span>
+    </button>
+  </div>
 
   <!-- WELCOME -->
   <section class="section section-ivory">
@@ -1633,83 +1636,78 @@ if (!document.querySelector('#dynamic-form-styles')) {
   `;
   document.head.appendChild(style);
 }
-// ===== МУЗЫКАЛЬНЫЙ ПЛЕЕР =====
+// ===== MUSIC PLAYER =====
 let audio = null;
-let isMusicPlaying = false;
+let isPlaying = false;
+const musicBtn = document.getElementById('music-toggle-btn');
+const musicBtnText = document.getElementById('music-btn-text');
+const musicIcon = document.querySelector('#music-toggle-btn .music-icon-emoji');
 
-// Функция для инициализации аудио
+// Ссылка на музыку (ЗАМЕНИТЕ НА ВАШУ ССЫЛКУ ПОТОМ)
+const MUSIC_URL = ''; // Сюда вставите ссылку на музыку с Google Диска
+
 function initAudio() {
-  if (!audio) {
-    audio = new Audio();
-    // ВСТАВЬТЕ ВАШУ ССЫЛКУ НА МУЗЫКУ С GOOGLE DISK ЗДЕСЬ
-    // Вариант 1: Прямая ссылка (если получится)
-    audio.src = 'YOUR_MUSIC_URL_HERE';
-    
-    // Вариант 2: Для Google Drive используйте thumbnail (только для аудио может не работать)
-    // Лучше загрузить на другой хостинг или в репозиторий
-    
+  if (!audio && MUSIC_URL) {
+    audio = new Audio(MUSIC_URL);
     audio.loop = true; // Зацикливаем музыку
     audio.volume = 0.5; // Громкость 50%
     
-    // Обработчик ошибок
-    audio.onerror = function() {
-      console.error('Ошибка загрузки музыки');
-      const musicText = document.getElementById('music-text');
-      musicText.textContent = 'Ошибка загрузки';
-      setTimeout(() => {
-        musicText.textContent = 'Включить музыку';
-      }, 2000);
-    };
+    // Обработчики событий
+    audio.addEventListener('play', () => {
+      isPlaying = true;
+      musicBtn.classList.add('playing');
+      musicBtnText.textContent = 'музыка играет';
+      musicIcon.textContent = '🎵';
+    });
+    
+    audio.addEventListener('pause', () => {
+      isPlaying = false;
+      musicBtn.classList.remove('playing');
+      musicBtnText.textContent = 'нажмите для включения';
+      musicIcon.textContent = '🔊';
+    });
+    
+    audio.addEventListener('error', (e) => {
+      console.error('Ошибка загрузки музыки:', e);
+      musicBtnText.textContent = 'ошибка загрузки';
+      musicBtn.disabled = true;
+    });
   }
 }
 
 function toggleMusic() {
   initAudio();
-  const button = document.getElementById('music-button');
-  const musicText = document.getElementById('music-text');
   
-  if (!isMusicPlaying) {
-    // Воспроизводим музыку
-    audio.play().then(() => {
-      isMusicPlaying = true;
-      button.classList.add('playing');
-      musicText.innerHTML = 'Музыка играет';
-    }).catch(error => {
-      console.error('Ошибка воспроизведения:', error);
-      musicText.textContent = 'Нажмите для включения';
-      // В большинстве браузеров требуется взаимодействие пользователя
-      alert('Для воспроизведения музыки нажмите на кнопку');
-    });
-  } else {
-    // Останавливаем музыку
+  if (!audio) {
+    console.warn('Музыка ещё не загружена или ссылка не указана');
+    if (!MUSIC_URL) {
+      alert('Музыкальная ссылка пока не добавлена. Пожалуйста, добавьте её позже 🎵');
+    }
+    return;
+  }
+  
+  if (isPlaying) {
     audio.pause();
-    isMusicPlaying = false;
-    button.classList.remove('playing');
-    musicText.innerHTML = 'Включить музыку';
+  } else {
+    // Автоплей может быть заблокирован браузером, но пользователь уже кликнул
+    audio.play().catch(error => {
+      console.error('Ошибка воспроизведения:', error);
+      alert('Пожалуйста, нажмите кнопку ещё раз, чтобы включить музыку 🎵');
+    });
   }
 }
 
-// Автоматическая попытка воспроизведения (не сработает из-за политики браузеров)
-// Но можно попробовать после открытия конверта
-document.addEventListener('DOMContentLoaded', function() {
-  initAudio();
-});
-
-// Попытка воспроизвести после открытия конверта (всё равно может не сработать)
-// Добавьте в функцию openEnvelope вызов tryAutoPlay()
-function tryAutoPlay() {
-  if (audio && !isMusicPlaying) {
-    audio.play().then(() => {
-      isMusicPlaying = true;
-      const button = document.getElementById('music-button');
-      const musicText = document.getElementById('music-text');
-      if (button) {
-        button.classList.add('playing');
-        musicText.innerHTML = 'Музыка играет';
-      }
-    }).catch(e => console.log('Автовоспроизведение заблокировано браузером'));
-  }
+// Добавляем обработчик клика
+if (musicBtn) {
+  musicBtn.addEventListener('click', toggleMusic);
 }
+
+// Предзагрузка аудио при первом взаимодействии с сайтом
+document.addEventListener('click', function initAudioOnFirstClick() {
+  if (!audio && MUSIC_URL) {
+    initAudio();
+  }
+}, { once: true });
 </script>
 
 </body>
