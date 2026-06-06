@@ -346,86 +346,6 @@
     margin: 0 auto;
   }
 
-  /* ===== MUSIC BUTTON ===== */
-  .music-button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 20px 40px 20px; /* Увеличен нижний отступ с 10px до 40px */
-    position: relative;
-    z-index: 2;
-  }
-
-  .music-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 14px 32px;
-    background: var(--gold);
-    color: #FFF;
-    border: none;
-    border-radius: 40px;
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  }
-
-  .music-btn:hover {
-    background: var(--gold-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(184,153,106,0.4);
-  }
-
-  .music-btn:active {
-    transform: translateY(0);
-  }
-
-  .music-btn.playing {
-    background: var(--gold-dark);
-    animation: pulse-gentle 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-gentle {
-    0%, 100% {
-      box-shadow: 0 4px 15px rgba(184,153,106,0.3);
-    }
-    50% {
-      box-shadow: 0 6px 25px rgba(184,153,106,0.6);
-    }
-  }
-
-  .music-icon {
-    font-size: 20px;
-    display: inline-block;
-    transition: transform 0.2s ease;
-  }
-
-  .music-btn.playing .music-icon {
-    animation: musicWave 1s ease-in-out infinite;
-  }
-
-  @keyframes musicWave {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.15);
-    }
-  }
-
-  @media (max-width: 600px) {
-    .music-btn {
-      padding: 10px 24px;
-      font-size: 16px;
-      gap: 8px;
-    }
-  }
-
   /* ===== CALENDAR ===== */
   .calendar-container {
     max-width: 360px;
@@ -1000,11 +920,6 @@
   </div>
 </div>
 
-<!-- Скрытый аудио-плеер -->
-<audio id="bg-music" loop preload="auto">
-  <source src="https://drive.google.com/uc?export=download&id=1Rr4suqW3eBEkNkElsYyWvBiqM0dbYiNh" type="audio/mpeg">
-</audio>
-
 <!-- ===== MAIN CONTENT ===== -->
 <div id="main-content">
 
@@ -1032,14 +947,6 @@
 
   <!-- WELCOME -->
   <section class="section section-ivory">
-    <!-- КНОПКА МУЗЫКИ -->
-    <div class="music-button-container anim-element anim-fade-up delay-3">
-      <button id="music-toggle-btn" class="music-btn" onclick="toggleMusic()">
-        <span class="music-icon">🔊</span>
-        <span id="music-btn-text">включить музыку</span>
-      </button>
-    </div>
-    
     <div class="section-inner">
       <h2 class="section-title anim-element anim-fade-up">Дорогие гости!</h2>
       <div class="lace-divider-line anim-element anim-fade-up delay-1"><span class="ornament">♥</span></div>
@@ -1368,34 +1275,6 @@ function pluralizeSeconds(n) {
 
 document.getElementById('hero-photo').src = HERO_PHOTO_URL;
 
-// ===== MUSIC PLAYER =====
-const bgMusic = document.getElementById('bg-music');
-const musicBtn = document.getElementById('music-toggle-btn');
-const musicBtnText = document.getElementById('music-btn-text');
-const musicIcon = musicBtn.querySelector('.music-icon');
-
-bgMusic.volume = 0.5; // Громкость 50%
-
-function toggleMusic() {
-  if (bgMusic.paused) {
-    const playPromise = bgMusic.play();
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        musicBtn.classList.add('playing');
-        musicBtnText.textContent = 'выключить музыку';
-        musicIcon.textContent = '🎵';
-      }).catch(err => {
-        console.log('Браузер заблокировал воспроизведение:', err);
-      });
-    }
-  } else {
-    bgMusic.pause();
-    musicBtn.classList.remove('playing');
-    musicBtnText.textContent = 'включить музыку';
-    musicIcon.textContent = '🔊';
-  }
-}
-
 function openEnvelope() {
   const envelope = document.getElementById('envelope');
   envelope.classList.add('open');
@@ -1403,21 +1282,6 @@ function openEnvelope() {
     document.getElementById('envelope-screen').classList.add('hidden');
     document.getElementById('main-content').classList.add('visible');
     document.body.style.overflow = 'auto';
-    
-    // Автозапуск музыки при открытии конверта
-    setTimeout(() => {
-      if (bgMusic.paused) {
-        bgMusic.play().then(() => {
-          musicBtn.classList.add('playing');
-          musicBtnText.textContent = 'выключить музыку';
-          musicIcon.textContent = '🎵';
-        }).catch(() => {
-          // Если заблокировали — ничего, гость нажмёт кнопку сам
-        });
-      }
-    }, 300);
-    
-    // Анимация элементов hero
     setTimeout(() => {
       document.querySelectorAll('.hero-section .anim-element, .hero-section ~ .anim-element').forEach(el => {
         el.classList.add('visible');
